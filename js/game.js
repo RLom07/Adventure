@@ -1,13 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-    askPlayerName();
-});
-
-// Function to ask the player for their name
 function askPlayerName() {
     const outputEl = document.getElementById("output");
-    outputEl.innerHTML = ""; // Clear previous text
+    outputEl.innerHTML = "";
     print("Before your journey begins, tell us your name...\n", () => {
-        // Create an input field for the player to enter their name
         const inputEl = document.createElement("input");
         inputEl.type = "text";
         inputEl.id = "playerNameInput";
@@ -19,7 +13,6 @@ function askPlayerName() {
         inputEl.style.fontSize = "x-large";
         inputEl.autofocus = true;
 
-        // Create a submit button
         const buttonEl = document.createElement("button");
         buttonEl.textContent = "Confirm";
         buttonEl.style.background = "#000";
@@ -33,7 +26,7 @@ function askPlayerName() {
             const name = inputEl.value.trim();
             if (name.length > 0) {
                 gameState.player.name = name;
-                outputEl.innerHTML = ""; // Clear input UI
+                outputEl.innerHTML = ""; 
                 startIntroduction();
             } else {
                 print("Please enter a valid name.", () => {});
@@ -43,7 +36,6 @@ function askPlayerName() {
         outputEl.appendChild(inputEl);
         outputEl.appendChild(buttonEl);
 
-        // Allow pressing "Enter" to submit name
         inputEl.addEventListener("keypress", (event) => {
             if (event.key === "Enter") {
                 buttonEl.click();
@@ -52,7 +44,6 @@ function askPlayerName() {
     });
 }
 
-// Game state with player's name
 let gameState = {
     player: { name: "", hp: 30, maxHp: 30, attack: 5 },
     inventory: [],
@@ -64,7 +55,78 @@ let gameState = {
     nextLocation: null
 };
 
-// Function to start the game introduction after getting the name
+function saveGame() {
+    localStorage.setItem("adventureGameSave", JSON.stringify(gameState));
+}
+
+function loadGame() {
+    const savedData = localStorage.getItem("adventureGameSave");
+
+    if (savedData) {
+        gameState = JSON.parse(savedData);
+        print("Game loaded successfully!", () => {
+            enterLocation(gameState.location); 
+        });
+    } else {
+        print("No saved game found.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("adventureGameSave")) {
+        print("A previous save was found. Loading your adventure...", () => {
+            loadGame();
+        });
+    } else {
+        askPlayerName();
+    }
+});
+
+function enterLocation(name) {
+    gameState.location = name;
+    saveGame(); // Auto-save
+    print(`You have arrived at ${name}.`, () => {
+        if (name === "town") visitTown();
+        else if (name === "forest") exploreForest();
+    });
+}
+
+function addItemToInventory(item) {
+    gameState.inventory.push(item);
+    saveGame(); 
+    print(`You have obtained: ${item.name}`);
+}
+
+function updatePlayerHP(amount) {
+    gameState.player.hp = Math.max(0, Math.min(gameState.player.maxHp, gameState.player.hp + amount));
+    saveGame(); 
+    print(`Your health is now ${gameState.player.hp}/${gameState.player.maxHp}.`);
+}
+
+function completeQuest() {
+    gameState.questCompleted = true;
+    saveGame(); 
+    print("Congratulations! You have completed the quest.");
+}
+
+function startCombat(enemy) {
+    gameState.inCombat = true;
+    gameState.currentEnemy = enemy;
+    saveGame(); 
+    print(`A wild ${enemy.name} appears!`);
+}
+
+function defeatEnemy() {
+    if (gameState.currentEnemy.drop) {
+        addItemToInventory(gameState.currentEnemy.drop);
+    }
+    gameState.inCombat = false;
+    gameState.currentEnemy = null;
+    saveGame(); 
+    print("You have defeated the enemy!");
+}
+
+
 function startIntroduction() {
     const introText = `
 Welcome, ${gameState.player.name}.
@@ -83,7 +145,6 @@ What will you do?
     });
 }
 
-// Function to create typewriter effect for game text
 function typeWriterEffect(elementId, text, speed = 30, callback) {
     const element = document.getElementById(elementId);
     let i = 0;
@@ -97,7 +158,6 @@ function typeWriterEffect(elementId, text, speed = 30, callback) {
     }, speed);
 }
 
-// Function to print text dynamically with typewriter effect
 function print(text, callback) {
     const outputEl = document.getElementById("output");
     const lineEl = document.createElement("div");
@@ -114,7 +174,6 @@ function print(text, callback) {
     }, speed);
 }
 
-// Function to start the game after the intro
 function startGame() {
     print(`Your journey begins, ${gameState.player.name}...\n`, () => {
         print("Choose your path:", () => {
@@ -126,7 +185,6 @@ function startGame() {
     });
 }
 
-// Function to show options dynamically
 function showOptions(options) {
     const outputEl = document.getElementById("output");
     const choicesEl = document.createElement("div");
@@ -135,7 +193,7 @@ function showOptions(options) {
     options.forEach((opt, index) => {
         const choiceEl = document.createElement("div");
         choiceEl.className = "choice";
-        const letter = String.fromCharCode(65 + index); // A, B, C...
+        const letter = String.fromCharCode(65 + index); 
         choiceEl.textContent = `${letter}: ${opt.text}`;
         choiceEl.onclick = () => {
             clearOptions();
@@ -148,6 +206,72 @@ function showOptions(options) {
 }
 
 // Function to clear choices
+function clearOptions() {
+    const choicesEl = document.getElementById("choices");
+    if (choicesEl) choicesEl.remove();
+}
+
+function chooseLocation(choice) {
+    switch (choice) {
+        case "forest":
+            travel("forest");
+            break;
+        case "town":
+            travel("town");
+            break;
+        default:
+            print("Invalid choice. Please try again.", () => {
+                startGame();
+            });
+    }
+}
+
+function travel(destination) {
+    gameState.location = destination;
+    switch (destination) {
+        case "forest":
+            exploreForest(); 
+            break;
+        case "town":
+            visitTown(); 
+            break;
+        default:
+            print("You can't travel there.", () => {
+                startGame();
+            });
+    }
+}
+
+function clearGameText() {
+    const outputEl = document.getElementById("output");
+    outputEl.innerHTML = ""; 
+}
+
+// Shows choices and clears previous text ONLY when a choice is clicked
+function showOptions(options) {
+    const outputEl = document.getElementById("output");
+    const choicesEl = document.createElement("div");
+    choicesEl.id = "choices";
+
+    options.forEach((opt, index) => {
+        const choiceEl = document.createElement("div");
+        choiceEl.className = "choice";
+        const letter = String.fromCharCode(65 + index); // A, B, C...
+        choiceEl.textContent = `${letter}: ${opt.text}`;
+
+        // When choice is clicked, clear previous text and execute action
+        choiceEl.onclick = () => {
+            clearGameText(); // Removes everything except the title
+            clearOptions();
+            opt.action();
+        };
+
+        choicesEl.appendChild(choiceEl);
+    });
+
+    outputEl.appendChild(choicesEl);
+}
+
 function clearOptions() {
     const choicesEl = document.getElementById("choices");
     if (choicesEl) choicesEl.remove();
