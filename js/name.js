@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("adventureGameSave")) {
         console.log("Showing New Game / Continue choices"); // Debugging
+        skipEnter(); // Add this line to skip Enter immediately
         displayText("A previous save was found. What would you like to do?", () => {
             showOptions([
                 { text: "Continue", action: loadGame },
                 { text: "New Game", action: resetGame }
             ]);
-        }, true);
+        });
     } else {
         console.log("No save found. Asking for name..."); // Debugging
         askPlayerName();
@@ -18,9 +19,12 @@ function askPlayerName() {
     const outputEl = document.getElementById("output");
     outputEl.innerHTML = "";
 
-    displayText("Before your journey begins, tell us your name...\n", () => {
-        console.log("Displaying name input field..."); // Debugging
+    skipEnter();
 
+    displayText("Before your journey begins, tell us your name...\n", () => {
+        console.log("Displaying name input field...");
+
+        skipEnter(); // Skip Enter for next message
         const inputEl = document.createElement("input");
         inputEl.type = "text";
         inputEl.id = "playerNameInput";
@@ -31,18 +35,15 @@ function askPlayerName() {
         inputEl.style.fontFamily = "Consolas, monospace";
         inputEl.style.fontSize = "x-large";
         inputEl.autofocus = true;
+        skipEnter();
 
         outputEl.appendChild(inputEl);
 
-        // Detect when a valid name is typed and auto-confirm
-        inputEl.addEventListener("input", () => {
-            const name = inputEl.value.trim();
-            if (name.length > 0) {
-                setTimeout(() => {
-                    if (inputEl.value.trim() === name) { // Check if they stopped typing
-                        confirmName(name);
-                    }
-                }, 10000); 
+        // Listen for Enter key to confirm name
+        inputEl.addEventListener("keypress", (event) => {
+            if (event.key === "Enter" && inputEl.value.trim().length > 0) {
+                skipEnter(); // Skip Enter for next message
+                confirmName(inputEl.value.trim());
             }
         });
     });
@@ -56,7 +57,6 @@ function confirmName(name) {
     document.getElementById("output").innerHTML = ""; // Clear screen
     startIntroduction(); // Start game intro
 }
-
 
 function resetGame() {
     console.log("Resetting game..."); // Debugging
@@ -77,7 +77,8 @@ function resetGame() {
     };
 
     saveGame(); // Save reset state
-
+    skipEnter(); // Add this line to skip Enter immediately
+    
     displayText("Starting a new adventure...", () => {
         console.log("Restarting name entry..."); // Debugging
         askPlayerName(); // Restart the name entry

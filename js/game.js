@@ -84,9 +84,8 @@ function defeatEnemy() {
     displayText("You have defeated the enemy!");
 }
 
-let waitingForEnter = false; // Prevents skipping dialogues when waiting for input
+let skipEnterMode = false; // Default: Enter is required
 
-// Function to wait for "Enter" key before continuing (for dialogues)
 function displayText(text, callback) {
     const outputEl = document.getElementById("output");
     const lineEl = document.createElement("div");
@@ -94,18 +93,32 @@ function displayText(text, callback) {
 
     let i = 0;
     const speed = 30;
-    waitingForEnter = true; // Prevents skipping ahead
+    waitingForEnter = true;
 
     const timer = setInterval(() => {
         lineEl.textContent += text.charAt(i);
         i++;
         if (i >= text.length) {
             clearInterval(timer);
-            showEnterMessage(); // Show "Press Enter to continue"
-            waitForEnter(callback); // Wait for Enter before proceeding
+
+            if (skipEnterMode) {
+                console.log("Skipping Enter for this message."); // Debugging
+                skipEnterMode = false; // Reset for next message
+                if (callback) callback();
+            } else {
+                showEnterMessage();
+                waitForEnter(callback);
+            }
         }
     }, speed);
 }
+
+// Function to skip Enter requirement for the next message only
+function skipEnter() {
+    console.log("Skipping Enter activated."); // Debugging
+    skipEnterMode = true;
+}
+
 
 // Shows the "Press Enter to continue" message
 function showEnterMessage() {
@@ -144,6 +157,7 @@ function hideEnterMessage() {
 
 
 function showOptions(options) {
+    skipEnter();
     const outputEl = document.getElementById("output");
     clearOptions(); // Ensure previous choices are removed
 
@@ -175,19 +189,6 @@ function showOptions(options) {
 function clearOptions() {
     const choicesEl = document.getElementById("choices");
     if (choicesEl) choicesEl.remove();
-}
-
-// Function to wait for "Enter" key before continuing
-function waitForEnter(callback) {
-    function enterHandler(event) {
-        if (event.key === "Enter") {
-            document.removeEventListener("keydown", enterHandler);
-            waitingForEnter = false; // Allow next dialogue
-            if (callback) callback();
-        }
-    }
-
-    document.addEventListener("keydown", enterHandler);
 }
 
 

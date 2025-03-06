@@ -1,29 +1,33 @@
-let waitingForEnter = false; // Prevents skipping dialogue when waiting for input
 
-// Function to display text and optionally skip "Enter" requirement
-function displayText(text, callback, skipEnter = false) {
+function displayText(text, callback) {
     const outputEl = document.getElementById("output");
     const lineEl = document.createElement("div");
     outputEl.appendChild(lineEl);
 
     let i = 0;
     const speed = 30;
-
-    waitingForEnter = true; // Prevents skipping ahead
+    waitingForEnter = true;
 
     const timer = setInterval(() => {
         lineEl.textContent += text.charAt(i);
         i++;
         if (i >= text.length) {
             clearInterval(timer);
-            if (skipEnter) {
-                // If skipping Enter, go straight to the callback
+
+            if (skipEnterMode) {
+                skipEnterMode = false; // Reset after use
                 if (callback) callback();
             } else {
-                waitForEnter(callback); // Otherwise, require Enter
+                showEnterMessage();
+                waitForEnter(callback);
             }
         }
     }, speed);
+}
+
+// Function to skip Enter requirement for the next text only
+function skipEnter() {
+    skipEnterMode = true;
 }
 
 // Function to wait for "Enter" key before continuing (for dialogue)
