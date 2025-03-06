@@ -2,12 +2,7 @@
 let gameState = {
     player: { name: "", hp: 30, maxHp: 30, attack: 5 },
     inventory: [],
-    location: "town",
-    questGiven: false,
-    questCompleted: false,
-    inCombat: false,
-    currentEnemy: null,
-    nextLocation: null
+    currentScene: "intro", // Tracks the current story scene
 };
 
 // Auto-save function
@@ -21,28 +16,38 @@ function loadGame() {
 
     if (savedData) {
         gameState = JSON.parse(savedData);
-        enterLocation(gameState.location); // Start from last saved location
+        console.log("Game loaded:", gameState); // Debugging
+
+        if (gameState.currentScene) {
+            startScene(gameState.currentScene); // Resume the story at the last saved scene
+        } else {
+            displayText("No saved game found.");
+        }
     } else {
         displayText("No saved game found.");
     }
 }
 
-// Travel between locations
-function travel(destination) {
-    gameState.location = destination;
-    saveGame(); // Auto-save on travel
+function resetGame() {
+    console.log("Resetting game...");
 
-    switch (destination) {
-        case "forest":
-            exploreForest(); // From forest.js
-            break;
-        case "town":
-            visitTown(); // From town.js
-            break;
-        default:
-            displayText("You can't travel there.");
-    }
+    // Clear saved data
+    localStorage.removeItem("adventureGameSave"); 
+
+    // Reset game state
+    gameState = {
+        player: { name: "", hp: 30, maxHp: 30, attack: 5 },
+        inventory: [],
+        currentScene: "intro", // Reset story to the beginning
+    };
+
+    skipEnter();
+    saveGame(); // Save reset state
+    displayText("Starting a new adventure...", () => {
+        askPlayerName(); // Restart the name entry
+    });
 }
+
 
 // Handles item collection
 function addItemToInventory(item) {
@@ -202,3 +207,81 @@ function clearGameText() {
     });
 }
 
+// Updates the Heads-Up Display (HUD)
+function updateHUD() {
+    const playerInfoEl = document.getElementById("player-info");
+    const inventoryListEl = document.getElementById("inventory-list");
+
+    // Update player name
+    playerInfoEl.textContent = `Player: ${gameState.player.name}`;
+
+    // Update inventory display (only weapons)
+    inventoryListEl.innerHTML = "";
+    gameState.inventory.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item.name;
+        inventoryListEl.appendChild(li);
+    });
+}
+
+let previousGameText = ""; // Stores the last game text
+let inventoryOpen = false; // Tracks if inventory is open
+
+function openInventoryMenu() {
+    if (document.activeElement.tagName === "INPUT") return;
+    if (inventoryOpen) return; // Prevent reopening if already open
+
+    console.log("Inventory menu opened"); // Debugging
+    inventoryOpen = true; // Mark inventory as open
+
+    const weapons = gameState.inventory.filter(item => item.type === "weapon");
+
+    // Save current game text before clearing it
+    previousGameText = document.getElementById("output").innerHTML;
+
+    // Clear screen and show inventory
+    clearGameText();
+    displayText("📜 Inventory", () => {
+        displayText("Press Backspace to return", () => {
+            if (weapons.length === 0) {
+                displayText("You have no weapons in your inventory.");
+            } else {
+                showOptions(weapons.map(weapon => ({
+                    text: weapon.name,
+                    action: () => equipWeapon(weapon)
+                })));
+            }
+        });
+    });
+}
+
+// Function to close inventory and restore previous game text
+function closeInventory() {
+    if (!inventoryOpen) return; // Only run if inventory is open
+
+    console.log("Closing inventory, restoring game text..."); // Debugging
+    inventoryOpen = false; // Mark inventory as closed
+    document.getElementById("output").innerHTML = previousGameText; // Restore previous text
+}
+
+// Listen for "I" key to open inventory
+document.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() === "i") {
+        openInventoryMenu();
+    }
+});
+
+// Listen for "Backspace" key **only when inventory is open**
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Backspace" && inventoryOpen) {
+        closeInventory();
+    }
+});
+
+
+// Equips the selected weapon
+function equipWeapon(weapon) {
+    gameState.player.equippedWeapon = weapon;
+    saveGame(); // Save the equipped weapon
+    displayText(`${weapon.name} is now equipped.`);
+}

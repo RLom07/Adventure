@@ -1,138 +1,34 @@
 
-function displayText(text, callback) {
-    const outputEl = document.getElementById("output");
-    const lineEl = document.createElement("div");
-    outputEl.appendChild(lineEl);
-
-    let i = 0;
-    const speed = 30;
-    waitingForEnter = true;
-
-    const timer = setInterval(() => {
-        lineEl.textContent += text.charAt(i);
-        i++;
-        if (i >= text.length) {
-            clearInterval(timer);
-
-            if (skipEnterMode) {
-                skipEnterMode = false; // Reset after use
-                if (callback) callback();
-            } else {
-                showEnterMessage();
-                waitForEnter(callback);
-            }
-        }
-    }, speed);
-}
-
-// Function to skip Enter requirement for the next text only
-function skipEnter() {
-    skipEnterMode = true;
-}
-
-// Function to wait for "Enter" key before continuing (for dialogue)
-function waitForEnter(callback) {
-    function enterHandler(event) {
-        if (event.key === "Enter") {
-            document.removeEventListener("keydown", enterHandler);
-            waitingForEnter = false; // Allow next dialogue
-            if (callback) callback();
-        }
-    }
-
-    document.addEventListener("keydown", enterHandler);
-}
-
-// Function to show choices without requiring Enter key
-function showOptions(options) {
-    console.log("Displaying options:", options); // Debugging log
-
-    const outputEl = document.getElementById("output");
-    clearOptions(); // Ensure previous choices are removed
-
-    const choicesEl = document.createElement("div");
-    choicesEl.id = "choices";
-
-    options.forEach((opt, index) => {
-        const choiceEl = document.createElement("div");
-        choiceEl.className = "choice";
-        const letter = String.fromCharCode(65 + index); // A, B, C...
-        choiceEl.textContent = `${letter}: ${opt.text}`;
-
-        choiceEl.onclick = () => {
-            console.log(`Clicked: ${opt.text}`); // Debugging log
-            clearGameText(); // Clear previous text but keep the title
-            clearOptions();  // Clear choices
-            opt.action();    // Execute the choice action immediately
-        };
-
-        choicesEl.appendChild(choiceEl);
-    });
-
-    outputEl.appendChild(choicesEl);
-}
-
 function startIntroduction() {
-    displayText(`Welcome, ${gameState.player.name}.`, () => {
-        displayText(`You have entered the world of Adventure, a place where your choices shape your journey.`, () => {
-            displayText(`The path before you is yours to decide. Will you seek glory in battle? Explore the unknown? Forge your own legend?`, () => {
-                displayText(`Every decision matters. Every step tells a story.`, () => {
-                    updateHUD(); // Show inventory and player name
-                    startGame(); // Move to first decision
+    displayText("Prologue I: The Dream", () => {
+        displayText("You are floating in an endless void, weightless, drifting through an abyss untouched by time. There is no ground, no sky—only the vast nothingness stretching infinitely in every direction. You feel neither cold nor warmth, only the eerie sensation of being watched.", () => {
+            displayText("Then, from the shadows, she appears.", () => {
+                displayText("Her presence is familiar yet unrecognizable, a paradox wrapped in sorrow. Her form flickers like a candle in the wind, barely holding on to existence. Her eyes meet yours, filled with urgency and despair.", () => {
+                    displayText(`???: “Greetings, ${gameState.player.name}… if you are seeing this, then I am already dead.”`, () => {
+                        displayText("The void trembles. An unseen force distorts the space around you. Though there is nothing tangible, you sense a terrible presence drawing near. The air thickens, pressing down on you like an unseen weight.", () => {
+                            displayText("???: “He’s here.”", () => {
+                                displayText("She reaches out, fingers trembling, desperate. You instinctively try to grasp her hand, but reality itself bends. The shadows twist, churning into a monstrous storm of pure darkness. The presence grows stronger, suffocating, oppressive—an entity beyond comprehension.", () => {
+                                    displayText("???: “There is not much time… please, find me! I beg you—find me!”", () => {
+                                        displayText("The shadows consume her. You scream, yet no sound escapes your lips.", () => {
+                                            displayText("For a fleeting moment, a name appears before your eyes, glowing in crimson letters across the void:", () => {
+                                                displayText("Xivqmryw", () => {
+                                                    displayText("The name feels wrong, unnatural, as if it has been twisted beyond recognition. You know it means something. You know you're missing a crucial piece of the puzzle.", () => {
+                                                        displayText("Then, silence.", () => {
+                                                            displayText("And just like that, you awaken.", () => {
+                                                                startScene("chapter1"); // Move to next scene
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
                 });
             });
         });
     });
 }
-
-
-// Updates the Heads-Up Display (HUD)
-function updateHUD() {
-    const playerInfoEl = document.getElementById("player-info");
-    const inventoryListEl = document.getElementById("inventory-list");
-
-    // Update player name
-    playerInfoEl.textContent = `Player: ${gameState.player.name}`;
-
-    // Update inventory display (only weapons)
-    inventoryListEl.innerHTML = "";
-    gameState.inventory.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item.name;
-        inventoryListEl.appendChild(li);
-    });
-}
-
-// Opens the inventory selection menu (Only for Weapons)
-function openInventoryMenu() {
-    // If player is typing, do nothing
-    if (document.activeElement.tagName === "INPUT") return;
-
-    const weapons = gameState.inventory.filter(item => item.type === "weapon");
-
-    if (weapons.length === 0) {
-        displayText("You have no weapons in your inventory.");
-        return;
-    }
-
-    displayText("Select a weapon:", () => {
-        showOptions(weapons.map(weapon => ({
-            text: weapon.name,
-            action: () => equipWeapon(weapon)
-        })));
-    });
-}
-
-// Equips the selected weapon
-function equipWeapon(weapon) {
-    gameState.player.equippedWeapon = weapon;
-    saveGame(); // Save the equipped weapon
-    displayText(`${weapon.name} is now equipped.`);
-}
-
-// Listen for "I" key press to open inventory (only when not typing)
-document.addEventListener("keydown", (event) => {
-    if (event.key.toLowerCase() === "i") {
-        openInventoryMenu();
-    }
-});

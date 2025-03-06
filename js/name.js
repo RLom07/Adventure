@@ -58,30 +58,3 @@ function confirmName(name) {
     startIntroduction(); // Start game intro
 }
 
-function resetGame() {
-    console.log("Resetting game..."); // Debugging
-
-    // Clear saved data
-    localStorage.removeItem("adventureGameSave"); 
-
-    // Reset game state
-    gameState = {
-        player: { name: "", hp: 30, maxHp: 30, attack: 5 },
-        inventory: [],
-        location: null,
-        questGiven: false,
-        questCompleted: false,
-        inCombat: false,
-        currentEnemy: null,
-        nextLocation: null
-    };
-
-    saveGame(); // Save reset state
-    skipEnter(); // Add this line to skip Enter immediately
-    
-    displayText("Starting a new adventure...", () => {
-        console.log("Restarting name entry..."); // Debugging
-        askPlayerName(); // Restart the name entry
-    }, true);
-}
-
