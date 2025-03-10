@@ -1,3 +1,4 @@
+/*
 document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("adventureGameSave")) {
         console.log("Showing New Game / Continue choices"); // Debugging
@@ -13,6 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
         askPlayerName();
     }
 });
+*/
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🚀 Starting new game by asking for player name...");
+    askPlayerName(); // Start name entry immediately
+});
+
 
 // Handles asking for the player's name
 function askPlayerName() {
@@ -57,4 +65,3 @@ function confirmName(name) {
     document.getElementById("output").innerHTML = ""; // Clear screen
     startIntroduction(); // Start game intro
 }
-

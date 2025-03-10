@@ -1,27 +1,94 @@
+//Game.js is used to handle all game logic and interactions, the backend of the game.
+
 // Game State - Everything stored here is automatically saved
 let gameState = {
     player: { name: "", hp: 30, maxHp: 30, attack: 5 },
     inventory: [],
-    currentScene: "intro", // Tracks the current story scene
+    scene: "" // Tracks the current story scene
 };
 
+// The commented out code was used to handle scene data, but it's now unused. It didnt work so i discontinued it.
+/*
+gameState.sceneData = gameState.sceneData || {}; // Ensure it's initialized
+let sceneData = gameState.sceneData; // Use this globally
+*/
+
 // Auto-save function
-function saveGame() {
-    localStorage.setItem("adventureGameSave", JSON.stringify(gameState));
+ function saveGame() {
+    const saveData = {
+        player: gameState.player,
+        inventory: gameState.inventory
+    };
+
+    localStorage.setItem("adventureGameSave", JSON.stringify(saveData));
+    console.log("✅ Game saved:", saveData);
 }
 
+/*
+function loadSceneFile(sceneName, callback) {
+    const script = document.createElement("script");
+    script.src = `js/scenes/${sceneName}.js`;
+    script.defer = true;
+
+    script.onload = () => {
+        console.log(`✅ Scene "${sceneName}" loaded successfully.`);
+        if (callback) callback();
+    };
+
+    script.onerror = () => {
+        console.error(`❌ Failed to load scene "${sceneName}".`);
+        displayText("Error: Scene file could not be loaded.");
+    };
+
+    document.head.appendChild(script);
+}
+*/
+
+function startScene(sceneName) {
+    if (!window.sceneData || !sceneData[sceneName]) {
+        console.warn(`❌ Scene "${sceneName}" not found.`);
+        console.log("🗺️ Available scenes:", Object.keys(sceneData)); 
+        displayText(`Error: Scene "${sceneName}" does not exist.`);
+        return;
+    }
+
+    console.log(`🎭 Running scene function for: ${sceneName}`);
+
+    gameState.scene = sceneName; // Store the scene ID
+    saveGame(); // Auto-save
+
+    // Run the scene's function instead of displaying text
+    if (typeof window[sceneName] === "function") {
+        clearGameText();
+        window[sceneName](); // Calls the correct function
+    } else {
+        console.error(`❌ Error: Scene function "${sceneName}" is not defined.`);
+        displayText(`Error: Scene "${sceneName}" is missing a function.`);
+    }
+}
+
+/*
 // Load function - Retrieves saved data if available
 function loadGame() {
     const savedData = localStorage.getItem("adventureGameSave");
 
     if (savedData) {
-        gameState = JSON.parse(savedData);
-        console.log("Game loaded:", gameState); // Debugging
+        const loadedGame = JSON.parse(savedData);
+        console.log("🔄 Game loaded:", loadedGame);
 
-        if (gameState.currentScene) {
-            startScene(gameState.currentScene); // Resume the story at the last saved scene
+        gameState.player = loadedGame.player;
+        gameState.inventory = loadedGame.inventory;
+        gameState.scene = loadedGame.scene;
+
+        console.log(`🎭 Resuming scene: ${gameState.scene}`);
+
+        if (!sceneData[gameState.scene]) {
+            console.warn(`⚠️ Scene "${gameState.scene}" is missing. Reloading scene file...`);
+            loadSceneFile(gameState.scene, () => {
+                startScene(gameState.scene);
+            });
         } else {
-            displayText("No saved game found.");
+            startScene(gameState.scene);
         }
     } else {
         displayText("No saved game found.");
@@ -38,16 +105,16 @@ function resetGame() {
     gameState = {
         player: { name: "", hp: 30, maxHp: 30, attack: 5 },
         inventory: [],
-        currentScene: "intro", // Reset story to the beginning
+        scene: "intro"
     };
 
     skipEnter();
-    saveGame(); // Save reset state
+    saveGame(); 
     displayText("Starting a new adventure...", () => {
-        askPlayerName(); // Restart the name entry
+        askPlayerName(); 
     });
 }
-
+*/
 
 // Handles item collection
 function addItemToInventory(item) {
@@ -89,7 +156,7 @@ function defeatEnemy() {
     displayText("You have defeated the enemy!");
 }
 
-let skipEnterMode = false; // Default: Enter is required
+let skipEnterMode = false; 
 
 function displayText(text, callback) {
     const outputEl = document.getElementById("output");
@@ -120,10 +187,8 @@ function displayText(text, callback) {
 
 // Function to skip Enter requirement for the next message only
 function skipEnter() {
-    console.log("Skipping Enter activated."); // Debugging
     skipEnterMode = true;
 }
-
 
 // Shows the "Press Enter to continue" message
 function showEnterMessage() {
@@ -144,8 +209,8 @@ function waitForEnter(callback) {
     function enterHandler(event) {
         if (event.key === "Enter") {
             document.removeEventListener("keydown", enterHandler);
-            waitingForEnter = false; // Allow next dialogue
-            hideEnterMessage(); // Hide "Press Enter to continue"
+            waitingForEnter = false;
+            hideEnterMessage(); 
             if (callback) callback();
         }
     }
@@ -159,29 +224,34 @@ function hideEnterMessage() {
     if (enterMessage) enterMessage.remove();
 }
 
-
-
 function showOptions(options) {
     skipEnter();
+    console.log("Options received in showOptions():", options); // Debugging
+
     const outputEl = document.getElementById("output");
     clearOptions(); // Ensure previous choices are removed
 
     const choicesEl = document.createElement("div");
     choicesEl.id = "choices";
 
-    console.log("Choices being created:", options); // Debugging: Check if choices exist
-
     options.forEach((opt, index) => {
+        console.log("Choice being created:", opt); // Debugging each option
         const choiceEl = document.createElement("div");
         choiceEl.className = "choice";
         const letter = String.fromCharCode(65 + index); // A, B, C...
         choiceEl.textContent = `${letter}: ${opt.text}`;
 
         choiceEl.onclick = () => {
-            console.log(`Clicked: ${opt.text}`); // Debugging: Check if click works
-            clearGameText();
-            clearOptions();
-            opt.action(); // Execute the action when clicked
+            console.log(`Clicked: ${opt.text}`, opt); // Debugging
+
+            if (typeof opt.action === "function") {
+                clearGameText();
+                clearOptions();
+                opt.action(); // Execute the action when clicked
+            } else {
+                console.error(`❌ Error: Action for "${opt.text}" is not a function`, opt);
+                displayText("Error: Invalid choice.");
+            }
         };
 
         choicesEl.appendChild(choiceEl);
@@ -224,14 +294,13 @@ function updateHUD() {
     });
 }
 
-let previousGameText = ""; // Stores the last game text
-let inventoryOpen = false; // Tracks if inventory is open
+let previousGameText = ""; 
+let inventoryOpen = false; 
 
 function openInventoryMenu() {
     if (document.activeElement.tagName === "INPUT") return;
     if (inventoryOpen) return; // Prevent reopening if already open
 
-    console.log("Inventory menu opened"); // Debugging
     inventoryOpen = true; // Mark inventory as open
 
     const weapons = gameState.inventory.filter(item => item.type === "weapon");
@@ -254,7 +323,7 @@ function openInventoryMenu() {
         });
     });
 }
-
+    
 // Function to close inventory and restore previous game text
 function closeInventory() {
     if (!inventoryOpen) return; // Only run if inventory is open
@@ -282,6 +351,95 @@ document.addEventListener("keydown", (event) => {
 // Equips the selected weapon
 function equipWeapon(weapon) {
     gameState.player.equippedWeapon = weapon;
-    saveGame(); // Save the equipped weapon
+    saveGame(); 
     displayText(`${weapon.name} is now equipped.`);
+}
+
+// This tool is used for developers to skip specific scenes during development, if you want to play the game like its suposed to i suggest you leave this function alone.
+function devSkipScene() {
+    if (!window.sceneData || Object.keys(sceneData).length === 0) {
+        console.warn("❌ No scenes are registered yet.");
+        displayText("Error: No scenes are available.");
+        return;
+    }
+
+    console.log("🗺️ Available scenes:", Object.keys(sceneData));
+  
+    const sceneName = prompt("Enter scene ID to jump to:\n" + Object.keys(sceneData).join(", "));
+
+    if (sceneName && sceneData[sceneName]) {
+        console.log(`🔄 Jumping to scene: ${sceneName}`);
+        
+        // Instead of displaying text, directly run the scene's function
+        if (typeof window[sceneName] === "function") {
+            clearGameText();
+            window[sceneName](); // Runs the scene's function
+        } else {
+            console.warn(`❌ No function found for scene "${sceneName}".`);
+            displayText(`Error: Scene "${sceneName}" is missing a function.`);
+        }
+    } else {
+        console.warn(`❌ Scene "${sceneName}" not found.`);
+        displayText(`Error: Scene "${sceneName}" does not exist.`);
+    }
+}
+
+// Bind `CTRL + S` to `devSkipScene()`
+document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.key.toLowerCase() === "s") {
+        event.preventDefault(); // Prevent browser save popup
+        devSkipScene();
+    }
+});
+
+function changeSceneMusic(newMusicId) {
+    const currentMusic = document.querySelector("audio.playing");
+
+    if (currentMusic) {
+        fadeOutMusic(currentMusic, () => {
+            currentMusic.classList.remove("playing");
+            playNewMusic(newMusicId);
+        });
+    } else {
+        playNewMusic(newMusicId);
+    }
+}
+
+// Fade out current music
+function fadeOutMusic(audioElement, callback) {
+    let volume = audioElement.volume;
+    const fadeInterval = setInterval(() => {
+        if (volume > 0.05) {
+            volume -= 0.05;
+            audioElement.volume = volume;
+        } else {
+            clearInterval(fadeInterval);
+            audioElement.pause();
+            audioElement.volume = 1.0; // Reset for next use
+            if (callback) callback();
+        }
+    }, 200);
+}
+
+// Play new music with fade-in effect
+function playNewMusic(musicId) {
+    const newMusic = document.getElementById(musicId);
+    if (!newMusic) {
+        console.warn(`⚠️ Music file "${musicId}" not found.`);
+        return;
+    }
+
+    newMusic.classList.add("playing");
+    newMusic.volume = 0;
+    newMusic.play().catch(error => console.warn("🔇 Failed to play music automatically:", error));
+
+    let volume = 0;
+    const fadeInterval = setInterval(() => {
+        if (volume < 0.5) {
+            volume += 0.05;
+            newMusic.volume = volume;
+        } else {
+            clearInterval(fadeInterval);
+        }
+    }, 200);
 }
