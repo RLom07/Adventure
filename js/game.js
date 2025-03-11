@@ -2,7 +2,7 @@
 
 // Game State - Everything stored here is automatically saved
 let gameState = {
-    player: { name: "Dev", hp: 30, maxHp: 30, attack: 5 }, // Hardcoded name for development
+    player: { name: "Dev", hp: 30, maxHp: 30, attack: 5 }, // 👈 Hardcoded name for development
     inventory: [],
     scene: "" // Tracks the current story scene
 };
@@ -281,15 +281,13 @@ function updateHUD() {
     const hudEl = document.getElementById("hud");
     if (!hudEl) return; // Prevent errors if HUD isn't found
 
-    // Ensure the default name is set correctly
-    let playerName = gameState.player.name.trim() || "Player";
+    const playerName = gameState.player.name || "Player";
 
     hudEl.innerHTML = `
         <div id="inventory-indicator">[I] Inventory</div>
         <div id="player-info">🔹 ${playerName} | ❤️ HP: ${gameState.player.hp}/${gameState.player.maxHp}</div>
     `;
 }
-
 
 let previousGameText = ""; 
 let inventoryOpen = false; 
