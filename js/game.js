@@ -2,10 +2,11 @@
 
 // Game State - Everything stored here is automatically saved
 let gameState = {
-    player: { name: "", hp: 30, maxHp: 30, attack: 5 },
+    player: { name: "Dev", hp: 30, maxHp: 30, attack: 5 }, // Hardcoded name for development
     inventory: [],
     scene: "" // Tracks the current story scene
 };
+
 
 // The commented out code was used to handle scene data, but it's now unused. It didnt work so i discontinued it.
 /*
@@ -47,7 +48,6 @@ function loadSceneFile(sceneName, callback) {
 function startScene(sceneName) {
     if (!window.sceneData || !sceneData[sceneName]) {
         console.warn(`❌ Scene "${sceneName}" not found.`);
-        console.log("🗺️ Available scenes:", Object.keys(sceneData)); 
         displayText(`Error: Scene "${sceneName}" does not exist.`);
         return;
     }
@@ -55,12 +55,12 @@ function startScene(sceneName) {
     console.log(`🎭 Running scene function for: ${sceneName}`);
 
     gameState.scene = sceneName; // Store the scene ID
-    saveGame(); // Auto-save
+    saveGame();
+    updateHUD(); // ✅ Ensure HUD updates on scene change
 
-    // Run the scene's function instead of displaying text
     if (typeof window[sceneName] === "function") {
         clearGameText();
-        window[sceneName](); // Calls the correct function
+        window[sceneName]();
     } else {
         console.error(`❌ Error: Scene function "${sceneName}" is not defined.`);
         displayText(`Error: Scene "${sceneName}" is missing a function.`);
@@ -278,20 +278,18 @@ function clearGameText() {
 
 // Updates the Heads-Up Display (HUD)
 function updateHUD() {
-    const playerInfoEl = document.getElementById("player-info");
-    const inventoryListEl = document.getElementById("inventory-list");
+    const hudEl = document.getElementById("hud");
+    if (!hudEl) return; // Prevent errors if HUD isn't found
 
-    // Update player name
-    playerInfoEl.textContent = `Player: ${gameState.player.name}`;
+    // Ensure the default name is set correctly
+    let playerName = gameState.player.name.trim() || "Player";
 
-    // Update inventory display (only weapons)
-    inventoryListEl.innerHTML = "";
-    gameState.inventory.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item.name;
-        inventoryListEl.appendChild(li);
-    });
+    hudEl.innerHTML = `
+        <div id="inventory-indicator">[I] Inventory</div>
+        <div id="player-info">🔹 ${playerName} | ❤️ HP: ${gameState.player.hp}/${gameState.player.maxHp}</div>
+    `;
 }
+
 
 let previousGameText = ""; 
 let inventoryOpen = false; 

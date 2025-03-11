@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 */
-
+//Dont forget to decommend later
+/*
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🚀 Starting new game by asking for player name...");
     askPlayerName(); // Start name entry immediately
@@ -58,11 +59,21 @@ function askPlayerName() {
 
 // Confirms and saves the name automatically
 function confirmName(name) {
-    console.log(`✅ Name confirmed: ${name}`); // Debugging
-    gameState.player.name = name; // Save name in game state
-    saveGame(); // Auto-save
-
-    // Clear screen and start introduction
+    gameState.player.name = name.trim();
+    saveGame();
+    updateHUD(); // Update HUD after name is confirmed
     document.getElementById("output").innerHTML = "";
     startIntroduction();
 }
+*/
+
+// for development purposes, automatically start the game with a predefined name
+document.addEventListener("DOMContentLoaded", () => {
+    if (gameState.player.name && gameState.player.name !== "") {
+        console.log("🔄 Skipping name entry (Development Mode)..."); 
+        updateHUD(); // Ensure HUD updates
+        startIntroduction(); // Jump straight to the game
+    } else {
+        askPlayerName(); // Normal behavior for players
+    }
+});
