@@ -158,7 +158,7 @@ function defeatEnemy() {
 
 let skipEnterMode = false; 
 
-function displayText(text, callback) {
+function displayText(text, callback, skipEnter = false) {
     const outputEl = document.getElementById("output");
     const lineEl = document.createElement("div");
     outputEl.appendChild(lineEl);
@@ -173,13 +173,12 @@ function displayText(text, callback) {
         if (i >= text.length) {
             clearInterval(timer);
 
-            if (skipEnterMode) {
-                console.log("Skipping Enter for this message."); // Debugging
-                skipEnterMode = false; // Reset for next message
-                if (callback) callback();
-            } else {
+            // Prevent "Press Enter to continue" if skipEnter is true
+            if (!skipEnter && !inventoryOpen) {
                 showEnterMessage();
                 waitForEnter(callback);
+            } else if (callback) {
+                callback();
             }
         }
     }, speed);
@@ -310,16 +309,31 @@ function openInventoryMenu() {
 
     // Clear screen and show inventory
     clearGameText();
+    
     displayText("📜 Inventory", () => {
-        displayText("Press Backspace to return", () => {
-            if (weapons.length === 0) {
-                displayText("You have no weapons in your inventory.");
-            } else {
-                showOptions(weapons.map(weapon => ({
-                    text: weapon.name,
-                    action: () => equipWeapon(weapon)
-                })));
-            }
+        displayText("🔻 Mysterious Name: Xivqmryw", () => { 
+            displayText("Press Backspace to return", () => {
+                if (gameState.inventory.length === 0) {
+                    displayText("Your inventory is empty.");
+                } else {
+                    // Display all items, not just weapons
+                    displayText("🔹 Items:", () => {
+                        gameState.inventory.forEach(item => {
+                            displayText(`- ${item.name}`);
+                        });
+
+                        // Show weapon selection options
+                        if (weapons.length > 0) {
+                            displayText("🗡️ Select a weapon:", () => {
+                                showOptions(weapons.map(weapon => ({
+                                    text: weapon.name,
+                                    action: () => equipWeapon(weapon)
+                                })));
+                            });
+                        }
+                    });
+                }
+            });
         });
     });
 }
@@ -343,10 +357,10 @@ document.addEventListener("keydown", (event) => {
 // Listen for "Backspace" key **only when inventory is open**
 document.addEventListener("keydown", (event) => {
     if (event.key === "Backspace" && inventoryOpen) {
+        event.preventDefault(); // Prevent accidental page navigation
         closeInventory();
     }
 });
-
 
 // Equips the selected weapon
 function equipWeapon(weapon) {
