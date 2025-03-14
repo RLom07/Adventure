@@ -11,6 +11,7 @@
 <body>
     <div id="game">
         <h1 id="title">Adventure</h1>
+        <div id="dev-health"></div> <!-- Always visible Dev Health Bar -->
         <div id="hud"></div>
         <div id="output"></div>
     </div>
@@ -22,6 +23,7 @@
     <audio id="adventureBegins" src="music/adventure-begins.mp3" loop></audio>
 
     <!-- script links -->
+    <script src="js/items.js"></script>
     <script src="js/game.js" defer></script> 
     <script src="js/scenes/prologue.js" defer></script>
     <script src="js/scenes/chapter1.js" defer></script>

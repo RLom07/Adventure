@@ -2,7 +2,7 @@
 
 // Game State - Everything stored here is automatically saved
 let gameState = {
-    player: { name: "Dev", hp: 30, maxHp: 30, attack: 5 }, // 👈 Hardcoded name for development
+    player: { name: "", hp: 30, maxHp: 30, attack: 5 }, // 👈 Hardcoded name for development
     inventory: [],
     scene: "" // Tracks the current story scene
 };
@@ -453,3 +453,30 @@ function playNewMusic(musicId) {
         }
     }, 200);
 }
+
+// Developer Tool: Add any item to inventory with CTRL + D
+function devAddItem() {
+    if (typeof allItems === "undefined") {
+        console.warn("❌ Item database not found! Ensure items.js is loaded.");
+        return;
+    }
+
+    console.log("🛠️ Available items:", Object.keys(allItems));
+
+    const itemName = prompt("Enter the item name to add:\n" + Object.keys(allItems).join(", "));
+
+    if (itemName && allItems[itemName]) {
+        addItemToInventory(allItems[itemName]);
+        console.log(`✅ Added "${itemName}" to inventory.`);
+    } else {
+        console.warn(`❌ Item "${itemName}" not found.`);
+    }
+}
+
+// Bind `CTRL + D` to `devAddItem()`
+document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.key.toLowerCase() === "d") {
+        event.preventDefault(); // Prevent browser shortcut conflicts
+        devAddItem();
+    }
+});

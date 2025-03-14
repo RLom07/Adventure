@@ -62,5 +62,5 @@ function confirmName(name) {
     saveGame();
     updateHUD(); // Update HUD after name is confirmed
     document.getElementById("output").innerHTML = "";
-    startIntroduction();
+    startChapter1();
 }
