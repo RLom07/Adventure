@@ -23,7 +23,7 @@ function startLeaveScene() {
 
     displayText("Something stirs deep inside you—a feeling long buried beneath grief and fear.", () => {
         displayText("No more hiding. No more waiting for death to find you.", () => {
-            displayText("You pack what little you have: a dagger, a waterskin, and a single keepsake from your past. Stepping outside, the morning sun greets you with its golden embrace.", () => {
+            displayText("You pack what little you have: a dagger, a waterskin, a single keepsake from your past and some food. Stepping outside, the morning sun greets you with its golden embrace.", () => {
                 displayText("You take a deep breath.", () => {
                     displayText("The world awaits.", () => {
                         displayText("And with that, your Adventure begins.", () => {
@@ -42,16 +42,19 @@ function startLeaveScene() {
 
 // Function to give player starting items after the scene text finishes
 function obtainStartingItems() {
-    const dagger = { name: "Dagger", type: "weapon", damage: 5 };
-    const waterskin = { name: "Waterskin", type: "utility" };
-    const keepsake = { name: "Keepsake", type: "special" };
+    if (typeof allItems === "undefined") {
+        console.error("❌ Item database not found! Ensure items.js is loaded.");
+        return;
+    }
 
-    addItemToInventory(dagger);
-    addItemToInventory(waterskin);
-    addItemToInventory(keepsake);
+    addItemToInventory(allItems.dagger);
+    addItemToInventory(allItems.waterskin);
+    addItemToInventory(allItems.keepsake);
+    addItemToInventory(allItems.pork);
+    addItemToInventory(allItems.beef);
 
     if (!gameState.player.equippedWeapon) {
-        equipWeapon(dagger);
+        equipWeapon(allItems.dagger);
     }
 
     // After displaying item messages, move to the next scene

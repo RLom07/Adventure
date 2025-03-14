@@ -1,10 +1,10 @@
-//Game.js is used to handle all game logic and interactions, the backend of the game.
+//Game.js is used to handle game logic and interactions, the backend of the game.
 
 // Game State - Everything stored here is automatically saved
 let gameState = {
-    player: { name: "", hp: 30, maxHp: 30, attack: 5 }, // 👈 Hardcoded name for development
+    player: { name: "", hp: 30, maxHp: 30, attack: 5 },
     inventory: [],
-    scene: "" // Tracks the current story scene
+    currentScene: "" // Tracks the current story scene
 };
 
 
@@ -123,6 +123,23 @@ function addItemToInventory(item) {
     displayText(`You have obtained: ${item.name}`);
 }
 
+function removeItemFromInventory(itemName) {
+    if (!gameState.inventory) {
+        console.error("❌ ERROR: Inventory is undefined!");
+        return;
+    }
+
+    const itemIndex = gameState.inventory.findIndex(item => item.name === itemName);
+    
+    if (itemIndex !== -1) {
+        gameState.inventory.splice(itemIndex, 1); // Remove item
+        console.log(`🗑️ Removed "${itemName}" from inventory.`);
+        saveGame(); // Save updated inventory
+    } else {
+        console.warn(`⚠️ Item "${itemName}" not found in inventory.`);
+    }
+}
+
 // Updates player health
 function updatePlayerHP(amount) {
     gameState.player.hp = Math.max(0, Math.min(gameState.player.maxHp, gameState.player.hp + amount));
@@ -223,36 +240,21 @@ function hideEnterMessage() {
     if (enterMessage) enterMessage.remove();
 }
 
+// Show options without requiring Enter
 function showOptions(options) {
-    skipEnter();
-    console.log("Options received in showOptions():", options); // Debugging
-
-    const outputEl = document.getElementById("output");
-    clearOptions(); // Ensure previous choices are removed
-
-    const choicesEl = document.createElement("div");
+    clearOptions();
+    let outputEl = document.getElementById("output");
+    let choicesEl = document.createElement("div");
     choicesEl.id = "choices";
 
     options.forEach((opt, index) => {
-        console.log("Choice being created:", opt); // Debugging each option
-        const choiceEl = document.createElement("div");
+        let choiceEl = document.createElement("div");
         choiceEl.className = "choice";
-        const letter = String.fromCharCode(65 + index); // A, B, C...
-        choiceEl.textContent = `${letter}: ${opt.text}`;
-
+        choiceEl.textContent = `${String.fromCharCode(65 + index)}: ${opt.text}`;
         choiceEl.onclick = () => {
-            console.log(`Clicked: ${opt.text}`, opt); // Debugging
-
-            if (typeof opt.action === "function") {
-                clearGameText();
-                clearOptions();
-                opt.action(); // Execute the action when clicked
-            } else {
-                console.error(`❌ Error: Action for "${opt.text}" is not a function`, opt);
-                displayText("Error: Invalid choice.");
-            }
+            clearOptions();
+            opt.action(); // Execute instantly
         };
-
         choicesEl.appendChild(choiceEl);
     });
 
@@ -401,58 +403,6 @@ document.addEventListener("keydown", (event) => {
         devSkipScene();
     }
 });
-
-function changeSceneMusic(newMusicId) {
-    const currentMusic = document.querySelector("audio.playing");
-
-    if (currentMusic) {
-        fadeOutMusic(currentMusic, () => {
-            currentMusic.classList.remove("playing");
-            playNewMusic(newMusicId);
-        });
-    } else {
-        playNewMusic(newMusicId);
-    }
-}
-
-// Fade out current music
-function fadeOutMusic(audioElement, callback) {
-    let volume = audioElement.volume;
-    const fadeInterval = setInterval(() => {
-        if (volume > 0.05) {
-            volume -= 0.05;
-            audioElement.volume = volume;
-        } else {
-            clearInterval(fadeInterval);
-            audioElement.pause();
-            audioElement.volume = 1.0; // Reset for next use
-            if (callback) callback();
-        }
-    }, 200);
-}
-
-// Play new music with fade-in effect
-function playNewMusic(musicId) {
-    const newMusic = document.getElementById(musicId);
-    if (!newMusic) {
-        console.warn(`⚠️ Music file "${musicId}" not found.`);
-        return;
-    }
-
-    newMusic.classList.add("playing");
-    newMusic.volume = 0;
-    newMusic.play().catch(error => console.warn("🔇 Failed to play music automatically:", error));
-
-    let volume = 0;
-    const fadeInterval = setInterval(() => {
-        if (volume < 0.5) {
-            volume += 0.05;
-            newMusic.volume = volume;
-        } else {
-            clearInterval(fadeInterval);
-        }
-    }, 200);
-}
 
 // Developer Tool: Add any item to inventory with CTRL + D
 function devAddItem() {
