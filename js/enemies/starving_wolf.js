@@ -1,3 +1,5 @@
+// No longer being used
+/*
 (() => {
     if (!window.registeredEnemies) {
         window.registeredEnemies = {};
@@ -16,3 +18,4 @@
 
     console.log(`✅ Enemy Registered: ${window.registeredEnemies["starving_wolf"].name}`);
 })();
+*/

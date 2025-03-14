@@ -19,7 +19,7 @@ function startChapter2() {
     changeSceneMusic("forestNight");
     clearGameText();
 
-    displayText("Chapter 2: A Mentor", () => {
+    displayText("Chapter 2: A Beginning", () => {
         displayText("As you walk through the forest, you realize how long it has been since you have seen its beauty.", () => {
             displayText("The green trees, the animals—it is all so peaceful.", () => {
                 displayText("After hours of walking, you decide to set up camp and rest for the night.", () => {
@@ -82,6 +82,108 @@ function wolfEncounter() {
     });
 }
 
+// Must be placed here because it then will continue here after a battle
+function afterWolfFight() {
+
+    changeSceneMusic("forestNight");
+    clearGameText();
+
+    displayText("After the wolf crumbles to the ground, you look at it.", () => {
+        displayText("You realize if you are to survive the path ahead, you need to learn to fight.", () => {
+            displayText("Maybe in the village ahead there is someone who would like to mentor you.", () => {
+                displayText("For now, you have to choose what to do with the wolf.", () => {
+                    showOptions([
+                        { text: "Cut the wolf open and claim its fur and meat", action: cutWolfOpen },
+                        { text: "Leave it alone", action: leaveWolfAlone }
+                    ]);
+                });
+            });
+        });
+    });
+}
+
+// ✅ Case: Cut open the wolf and collect resources
+function cutWolfOpen() {
+    displayText("You cut the wolf open and take out its meat—might be useful later.", () => {
+        displayText("You also take its fur. You can’t really do much with it, but maybe you can trade it with someone.", () => {
+            // Add wolf meat and fur to inventory
+            addItemToInventory(allItems.wolfMeat);
+            addItemToInventory(allItems.wolfPelt);
+
+            saveGame(); // Save updated inventory
+
+            continueNightChoices();
+        });
+    });
+}
+
+// ✅ Case: Leave the wolf alone
+function leaveWolfAlone() {
+    displayText("You leave the wolf and sit back down at the campfire. Mother nature will do as she will with it anyway.", () => {
+        continueNightChoices();
+    });
+}
+
+// ✅ Continue the night choices (sleep or stay alert)
+function continueNightChoices() {
+    displayText("Your eyes are starting to become heavy, and you know you will need rest for the journey ahead.", () => {
+        displayText("But what if more wolves roam this forest? Can you safely sleep here?", () => {
+            displayText("You take a walk around the camp, and the coast seems clear—no wolves, no bandits, only mother nature.", () => {
+                showOptions([
+                    { text: "Take some much needed sleep", action: sleepAndRecover },
+                    { text: "Stay awake and alert all night", action: stayAlert }
+                ]);
+            });
+        });
+    });
+}
+
+// ✅ Case: Sleep and recover HP
+function sleepAndRecover() {
+    displayText("You awaken feeling refreshed and well rested.", () => {
+        displayText("You quickly take a good look at your belongings, and to your surprise, they are all still there.", () => {
+            gameState.player.hp = gameState.player.maxHp; // Fully restore HP
+            if (typeof updatePlayerHP === "function") {
+                updatePlayerHP(gameState.player.hp);
+            }
+            if (typeof updateHUD === "function") {
+                updateHUD(); // ✅ Ensure HUD reflects the new health
+            } else {
+                console.warn("⚠️ updateHUD function is missing!");
+            }
+            saveGame(); // Save state after sleep
+            proceedToNextDay();
+        });
+    });
+}
+
+// ✅ Case: Stay awake and lose HP
+function stayAlert() {
+    displayText("When daylight finally comes through, you feel like a tree has fallen on you.", () => {
+        displayText("You stayed up all night to make sure nothing would get neither you nor your belongings.", () => {
+             gameState.player.hp = gameState.player.hp - gameState.player.hp + 14; 
+            if (typeof updatePlayerHP === "function") {
+                updatePlayerHP(gameState.player.hp);
+            }
+            if (typeof updateHUD === "function") {
+                updateHUD(); // ✅ Ensure HUD reflects the new health
+            } else {
+                console.warn("⚠️ updateHUD function is missing!");
+            }
+                saveGame();
+            saveGame(); // Save updated HP
+            proceedToNextDay();
+        });
+    });
+}
+
+// ✅ Proceed to next day (continue story)
+function proceedToNextDay() {
+    displayText("The sun rises, and it's time to continue your journey towards the village.", () => {
+        changeScene("chapter3"); // Move to next chapter (adjust as needed)
+    });
+}
+
 // ✅ Starving Wolf Data (NO external file needed)
 const starving_wolf = {
     name: "Starving Wolf",
@@ -89,7 +191,8 @@ const starving_wolf = {
     attackOptions: [
         { name: "Bite", damage: 5, accuracy: 50 }
     ],
-    music: "combatMusic" 
+    music: "combatMusic",
+    afterDefeat: afterWolfFight 
 };
 
 // ✅ Case: Player chooses to fight
@@ -115,21 +218,17 @@ function calmWolf() {
     displayText("You throw it a piece of your dinner, and it starts tearing it apart and swallowing it.", () => {
         displayText("After it swallows the meat, the wolf looks right back at you. It doesn't seem satisfied.", () => {
             displayText("Before you can react, the wolf lunges and sinks its teeth into your arm!", () => {
-                
-                // ✅ Reduce player HP properly
-                gameState.player.hp = Math.max(0, gameState.player.hp - 3);
-                console.log(`💔 Player HP reduced by 3. Current HP: ${gameState.player.hp}`);
 
-                // ✅ Ensure the UI updates immediately
-                if (typeof updatePlayerHP === "function") {
-                    updatePlayerHP();
-                } else {
-                    console.warn("⚠️ updatePlayerHP function is missing!");
-                }
-
-                // ✅ Save the game state after HP change
+            gameState.player.hp = gameState.player.hp - gameState.player.hp + 13; 
+            if (typeof updatePlayerHP === "function") {
+                updatePlayerHP(gameState.player.hp);
+            }
+            if (typeof updateHUD === "function") {
+                updateHUD(); // ✅ Ensure HUD reflects the new health
+            } else {
+                console.warn("⚠️ updateHUD function is missing!");
+            }
                 saveGame();
-
 
                 displayText("Your dinner drops into the dirt. The wolf finally lets go, and you quickly draw your knife.", () => {
                     startCombat(starving_wolf); // Start combat after being attacked

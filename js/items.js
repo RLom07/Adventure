@@ -2,7 +2,7 @@ if (!window.allItems) {
     window.allItems = {};
 }
 
-// Define items as properties of allItems (not an array)
+// Define items as properties of allItems
 window.allItems = {
     // Weapons
     dagger: { name: "Dagger", type: "weapon", damage: 5 },
@@ -18,10 +18,15 @@ window.allItems = {
 
     // Special Items
     keepsake: { name: "Keepsake", type: "special" },
+
+    // Addible Items
     beef: { name: "Beef", type: "food" },
     pork: { name: "Pork", type: "food" },
     wolfMeat: { name: "Wolf Meat", type: "food" },
     dinner: { name: "Dinner", type: "food" },
+
+    // Loot Items
+    wolfPelt: { name: "Wolf Pelt", type: "loot" },
 
     // Healing Items
     smallHerb: { name: "Small Herb", type: "healing", healAmount: 5 },

@@ -98,20 +98,23 @@ function stopMusic() {
 }
 
 // Fade Out Music
-function fadeOutMusic(callback) {
-    if (!currentMusic) {
-        callback();
-        return;
-    }
-
-    let fadeInterval = setInterval(() => {
-        if (currentMusic.volume > 0.1) {
-            currentMusic.volume -= 0.1;
+function fadeOutMusic(audioElement, callback) {
+    let volume = audioElement.volume;
+    const fadeInterval = setInterval(() => {
+        if (volume > 0.05) {
+            volume -= 0.05;
+            audioElement.volume = volume;
         } else {
             clearInterval(fadeInterval);
-            currentMusic.pause();
-            currentMusic = null;
-            callback();
+            audioElement.pause();
+            audioElement.volume = 1.0; // Reset for next use
+
+            // ✅ Check if callback exists and is a function before calling it
+            if (typeof callback === "function") {
+                callback();
+            } else {
+                console.warn("⚠️ No valid callback function provided to fadeOutMusic!");
+            }
         }
     }, 200);
 }

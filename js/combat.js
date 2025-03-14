@@ -156,32 +156,11 @@ function enemyTurn() {
     }
 }
 
-// Ends the combat when enemy is defeated
-function endCombat() {
-    displayText(`You defeated ${combatState.enemy.name}!`, () => {
-        if (combatState.enemy.drop) {
-            addItemToInventory(combatState.enemy.drop);
-        }
-        gameState.inCombat = false;
-        combatState.enemy = null;
-
-        stopMusic();
-        playMusic("scenes/chapter2.mp3");
-
-        displayText("You take a deep breath, the battle is over.");
-    });
-}
-
 // Check if player is dead
 function checkCombatEnd() {
+    
     if (gameState.player.hp <= 0) {
-        displayText("You have been defeated...", () => {
-            stopMusic();
-            playMusic("death.mp3");
-            setTimeout(() => {
-                restartScene();
-            }, 3000);
-        });
+        handleGameOver();
         return;
     }
 
@@ -191,6 +170,33 @@ function checkCombatEnd() {
     }
 
     enemyTurn();
+}
+
+// Ends the combat when enemy is defeated
+function endCombat() {
+    displayText(`You defeated ${combatState.enemy.name}!`, () => {
+        if (combatState.enemy.drop) {
+            addItemToInventory(combatState.enemy.drop);
+        }
+        gameState.inCombat = false;
+        stopMusic();
+
+        displayText("You take a deep breath, the battle is over.", () => {
+            continueAfterBattle(); // ✅ Calls the correct post-battle function
+        });
+    });
+}
+
+// ✅ Dynamically calls the correct story function after battle
+function continueAfterBattle() {
+    if (combatState.enemy && combatState.enemy.afterDefeat) {
+        combatState.enemy.afterDefeat(); // Call the function dynamically
+    } else {
+        console.warn("⚠️ No afterDefeat function assigned to enemy.");
+        displayText("With your enemy vanquished, you take a moment to catch your breath.");
+    }
+
+    combatState.enemy = null; // Reset combat state
 }
 
 // Function to play death music (ensure this is in `audio.js` as well)
