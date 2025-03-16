@@ -290,5 +290,7 @@ function exceptionMade() {
 }
 
 function headUpstairs() {
-    displayText("You head upstairs to your room. When you finally get there you are exhausted from the long trip today. You lay down on the bed and fall in a deep sleep. ");
+    displayText("You head upstairs to your room. When you finally get there you are exhausted from the long trip today. You lay down on the bed and fall in a deep sleep.", () => {
+        startChapter4();
+    });
 }
