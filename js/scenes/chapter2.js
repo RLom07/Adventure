@@ -180,7 +180,7 @@ function stayAlert() {
 // ✅ Proceed to next day (continue story)
 function proceedToNextDay() {
     displayText("The sun rises, and it's time to continue your journey towards the village.", () => {
-        changeScene("chapter3"); // Move to next chapter (adjust as needed)
+        startChapter3() 
     });
 }
 

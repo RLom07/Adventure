@@ -123,20 +123,16 @@ function addItemToInventory(item) {
     displayText(`You have obtained: ${item.name}`);
 }
 
+// Removes an item from inventory
 function removeItemFromInventory(itemName) {
-    if (!gameState.inventory) {
-        console.error("❌ ERROR: Inventory is undefined!");
-        return;
-    }
-
     const itemIndex = gameState.inventory.findIndex(item => item.name === itemName);
-    
     if (itemIndex !== -1) {
-        gameState.inventory.splice(itemIndex, 1); // Remove item
-        console.log(`🗑️ Removed "${itemName}" from inventory.`);
-        saveGame(); // Save updated inventory
+        gameState.inventory.splice(itemIndex, 1); // Remove item from array
+        saveGame();
+        console.log(`🗑️ Removed ${itemName} from inventory.`);
+        updateHUD(); // Ensure HUD updates correctly
     } else {
-        console.warn(`⚠️ Item "${itemName}" not found in inventory.`);
+        console.warn(`⚠️ Tried to remove "${itemName}" but it wasn't found in inventory.`);
     }
 }
 
