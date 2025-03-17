@@ -103,7 +103,7 @@ function useHealingItem() {
 
     // ✅ Show options for available healing items
     showOptions(healingItems.map(item => ({
-        text: item.name,
+        text: `${item.name} (${item.healAmount} HP)`,
         action: () => {
             let previousHP = gameState.player.hp;
             let healedAmount = item.healAmount;

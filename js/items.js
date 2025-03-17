@@ -32,9 +32,11 @@ window.allItems = {
     bandage: { name: "Bandage", type: "healing", healAmount: 10 },
     smallHerb: { name: "Small Herb", type: "healing", healAmount: 5 },
     healingPotion: { name: "Healing Potion", type: "healing", healAmount: 15 },
-    bigHealingPotion: { name: "Big Healing Potion", type: "healing", healAmount: 30 },
+    cleanBandage: { name: "Clean Bandage", type: "healing", healAmount: 20},
+    herbalBandage: { name: "Herbal Bandage", type: "healing", healAmount: 30},
 
     // 🌿 Advanced Healing Items
+    bigHealingPotion: { name: "Big Healing Potion", type: "healing", healAmount: 50 },
     elixir: { name: "Elixir", type: "healing", healAmount: 50 },
     divineBlessing: { name: "Divine Blessing", type: "healing", healAmount: 100 },
 

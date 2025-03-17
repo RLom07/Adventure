@@ -180,22 +180,6 @@ const goat_rider = {
 
 function enemyEncounter() {
 
-    // ✅ Increase Player's Max HP & Fully Heal Them
-    gameState.player.maxHp = 100;
-    gameState.player.hp = gameState.player.maxHp; // ✅ Fully restore health
-
-    if (isNaN(gameState.player.hp) || gameState.player.hp > gameState.player.maxHp) {
-    gameState.player.hp = gameState.player.maxHp; // Ensure it's set correctly
-    }
-
-    // ✅ Ensure the HUD updates properly
-    if (typeof updatePlayerHP === "function") {
-        updatePlayerHP(gameState.player.hp); // ✅ Pass updated HP value
-    }
-    if (typeof updateHUD === "function") {
-        updateHUD();
-    }
-
     changeSceneMusic("twoGoatRiders");
     displayText("Suddenly, you hear a lot of commotion in the marketplace.", () => {
         displayText("???: There! That must be Alysandra’s chosen one!", () => {
@@ -240,6 +224,182 @@ function afterBattle() {
                                         displayText("Manji: Let’s go home before more of those animals show up.", () => {
                                             displayText("You: Yeah...", () => {
                                                 continueToManjiHouse(); 
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
+
+function continueToManjiHouse() {
+    clearGameText();
+    displayText("When you arrive at Manji's house you grab the letter out of your pocket and unfold it.", () => {
+        displayText("Manji: What’s that?", () => {
+            displayText("You: A letter I found on one of the dead Goat Riders.", () => {
+                displayText("You start reading the letter out loud.", () => {
+                    displayText("You: “To the Shadowed Riders,", () => {
+                        displayText("The faithful continue to seek our Lord’s return, but we must remain unseen.", () => {
+                            displayText("His will is not yet fulfilled, and the world must not suspect his awakening.", () => {
+                                displayText("The name of our Lord is known only to us, but outsiders may still stumble upon it.", () => {
+                                    displayText("Thus, we follow his command: Seal all knowledge behind the cipher of the Old Empire,", () => {
+                                        displayText("as it was in the days of fire and conquest.", () => {
+                                            displayText("The unworthy will see only twisted letters, meaningless and wrong.", () => {
+                                                displayText("Only those who follow the path shall unravel the truth.", () => {
+                                                    displayText("Remember the rule, as written in the sacred texts of the Abyss:", () => {
+                                                        displayText("“Four steps backwards, the past obscured.”", () => {
+                                                            displayText("Let no fool uncover what we guard, for the path must remain hidden until the hour of reckoning.”", () => {
+                                                                displayText("Manji: Seal knowledge? What knowledge?", () => {
+                                                                    displayText("You: I don’t know, what knowledge can animals like that possibly pos—", () => {
+                                                                        displayText("You: !!!", () => {
+                                                                            displayText("Manji: What?", () => {
+                                                                                displayText("You: The name!!!", () => {
+                                                                                    displayText("Manji: What name?", () => {
+                                                                                        displayText("You: The name I saw in my dream! I knew it had to mean something.", () => {
+                                                                                            displayText("You grab your journal and show Manji the name: Xivqmryw", () => {
+                                                                                                displayText("Manji: Damn kid, you might be onto something. Keep going.", () => {
+                                                                                                    displayText("You: Four steps backwards? Or maybe more like four letters backwards!", decipherNamePuzzle); // Calls the cipher puzzle
+                                                                                                });
+                                                                                            });
+                                                                                        });
+                                                                                    });
+                                                                                });
+                                                                            });
+                                                                        });
+                                                                    });
+                                                                });
+                                                            }, true);
+                                                        });
+                                                    }, true);
+                                                }, true);
+                                            });
+                                        });
+                                    }, true);
+                                }, true);
+                            }, true);
+                        }, true);
+                    }, true);
+                });
+            });
+        });
+    });
+}
+
+function decipherNamePuzzle() {
+
+    changeSceneMusic("theName");
+
+    const outputEl = document.getElementById("output");
+    outputEl.innerHTML = ""; // Clear previous content
+
+    displayText("You: Four steps backwards? Or maybe more like four letters backwards!", () => {
+        displayText("🔻 Mysterious Name: Xivqmryw", () => {
+            displayText("Enter the true name:", () => {
+                const inputEl = document.createElement("input");
+                inputEl.type = "text";
+                inputEl.id = "cipherInput";
+                inputEl.placeholder = "Enter the name...";
+                inputEl.style.background = "#000";
+                inputEl.style.color = "#33ff33";
+                inputEl.style.border = "1px solid #33ff33";
+                inputEl.style.fontFamily = "Consolas, monospace";
+                inputEl.style.fontSize = "x-large";
+                inputEl.autofocus = true;
+
+                outputEl.appendChild(inputEl);
+
+                // Hide "Press Enter to continue"
+                hideEnterMessage();
+
+                showOptions([
+                { text: "Give me a hint", action: giveHint }
+                ]);
+
+                // Listen for Enter key to check answer
+                inputEl.addEventListener("keypress", (event) => {
+                    if (event.key === "Enter" && inputEl.value.trim().length > 0) {
+                        checkCipherAnswer(inputEl.value.trim().toLowerCase());
+                    }
+                });
+            }, true); // Skip enter
+        }, true);
+    }, true);
+}
+// **Check the answer**
+function checkCipherAnswer(input) {
+    if (input == "terminus") {
+        playMusic("solved");
+        continueScene();
+    } else {
+        displayText("No, that cannot be it.", decipherNamePuzzle);
+    }
+}
+
+// **Hint functionality**
+let hintStep = 0;
+function giveHint() {
+    displayText("E -> A     X -> T");
+}
+
+function continueScene() {
+
+    clearGameText();
+    clearOptions();
+
+    displayText("You: Terminus...", () => {
+        displayText("Manji: Terminus? Are you sure?", () => {
+            displayText("You: Dead sure.", () => {
+                displayText("Manji: No way, that explains everything.", () => {
+                    displayText("You: What do you mean?", () => {
+                        displayText("Manji: Mari was doing research on Terminus, the brother of Emperor Pyrethorn.", () => {
+                            displayText("Manji: She never told me anything, saying it was too dangerous. I never understood why, but now it makes sense.", () => {
+                                displayText("Manji: The Goat Riders... they are still animals, but they kill for a reason.", () => {
+                                    displayText("Manji: Everyone who gets too close to the identity of their lord gets killed by them...", () => {
+                                        displayText("You: No way! But wait, then that means...", () => {
+                                            displayText("Manji: Yep, they are coming after me as well.", () => {
+                                                visionAndDeparture();
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
+
+function visionAndDeparture() {
+
+    changeSceneMusic("anotherVision");
+
+    displayText("All of a sudden, your head starts to hurt really bad. You fall to the ground.", () => {
+        displayText("Manji: KID! You alright?", () => {
+            displayText("Your head starts to hurt more and more until you suddenly hear the voice of that woman from your dreams.", () => {
+                displayText("???: You figured it out, good. You are ready to find me, you know where to go. Hurry, you are my only hope.", () => {
+                    displayText("Suddenly the pain starts to fade, but something remains—you know where you need to go.", () => {
+                        displayText("You: I know where I need to go. I’m sorry Manji, but I have to leave.", () => {
+                            displayText("Manji: Don’t be foolish, kid. I’m coming with you.", () => {
+                                displayText("You: Manji, no! I can’t bring you into any more danger.", () => {
+                                    displayText("Manji: I am already in danger, remember? The moment you uncovered that name, we both became bound to this fate.", () => {
+                                        displayText("Manji: Now shut up and go grab your things.", () => {
+                                            displayText("You: Okay...", () => {
+                                                addItemToInventory(allItems.cleanBandage);
+                                                addItemToInventory(allItems.herbalBandage);
+                                                addItemToInventory(allItems.bigHealingPotion);
+                                                addItemToInventory(allItems.elixir);
+                                                displayText("You grab all your belongings. When you finish packing, Manji is already waiting for you.", () => {
+                                                    displayText("Manji: Took you long enough. Let’s move out. Lead the way.", () => {
+                                                        displayText("You and Manji leave, with you leading the way. You don’t know how, but you just know where you need to go.");
+                                                    });
+                                                });
                                             });
                                         });
                                     });
