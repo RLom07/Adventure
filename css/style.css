@@ -30,7 +30,6 @@ body {
     text-decoration: underline;
 }
 
-/* Heads-Up Display (HUD) */
 #hud {
     position: absolute;
     top: 10px;
@@ -57,3 +56,4 @@ body {
 #inventory-list li {
     margin: 5px 0;
 }
+

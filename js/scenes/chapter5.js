@@ -397,7 +397,9 @@ function visionAndDeparture() {
                                                 addItemToInventory(allItems.elixir);
                                                 displayText("You grab all your belongings. When you finish packing, Manji is already waiting for you.", () => {
                                                     displayText("Manji: Took you long enough. Let’s move out. Lead the way.", () => {
-                                                        displayText("You and Manji leave, with you leading the way. You don’t know how, but you just know where you need to go.");
+                                                        displayText("You and Manji leave, with you leading the way. You don’t know how, but you just know where you need to go.", () => {
+                                                            startChapter6();
+                                                        });
                                                     });
                                                 });
                                             });

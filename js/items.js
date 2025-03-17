@@ -8,7 +8,7 @@ window.allItems = {
     dagger: { name: "Dagger", type: "weapon", damage: 5 },
     sword: { name: "Sword", type: "weapon", damage: 10 },
     katana: { name: "Katana", type: "weapon", damage: 15 },
-    bladeOfTheImmortal: { name: "Blade of the Immortal", type: "weapon", damage: 25 },
+    bladeOfTheImmortal: { name: "Blade of the Immortal", type: "weapon", damage: 50 },
     terminusMinionSwords: { name: "Terminus Minion Swords", type: "weapon", damage: 20 },
     terminusSword: { name: "Terminus Sword", type: "weapon", damage: 30 },
 
@@ -40,8 +40,12 @@ window.allItems = {
     elixir: { name: "Elixir", type: "healing", healAmount: 50 },
     divineBlessing: { name: "Divine Blessing", type: "healing", healAmount: 100 },
 
+
     // 🩸 Special Regeneration Items
-    herbalMix: { name: "Herbal Mix", type: "healing", healAmount: 20 }
+    herbalMix: { name: "Herbal Mix", type: "healing", healAmount: 20 },
+    soulRemnant: { name: "Soul Remnant", type: "healing", healAmount: 75 },
+    abyssalDraught: { name: "Abyssal Draught", type: "healing", healAmount: 60}, 
+    emberOfPyrethorn: { name: "Ember Of Pyrethorn", type: "healing", healAmount: 100}
 };
 
 // Dispatch event to notify items are loaded
