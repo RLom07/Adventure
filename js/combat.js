@@ -93,48 +93,38 @@ function changeWeapon() {
 }
 
 function useHealingItem() {
-    // Get all healing items from inventory
-    const healingItems = gameState.inventory.filter(item => item.type === "healing");
+    // ✅ Get all healing items from inventory
+    let healingItems = gameState.inventory.filter(item => item.type === "healing");
 
-    // If no healing items are available
     if (healingItems.length === 0) {
         displayText("You have no healing items!", playerTurn);
         return;
     }
 
-    // Create choices for each healing item
-    const healingOptions = healingItems.map(item => ({
+    // ✅ Show options for available healing items
+    showOptions(healingItems.map(item => ({
         text: item.name,
         action: () => {
-            // Calculate healed amount
-            let healedAmount = Math.min(item.healAmount, gameState.player.maxHp - gameState.player.hp);
-            gameState.player.hp += healedAmount;
+            let previousHP = gameState.player.hp;
+            let healedAmount = item.healAmount;
+            let newHP = Math.min(previousHP + healedAmount, gameState.player.maxHp);
 
-            if (gameState.player.hp > gameState.player.maxHp) {
-                gameState.player.hp = gameState.player.maxHp; // Cap at max HP
-            }
+            // ✅ Update player HP
+            gameState.player.hp = newHP;
 
-            // Remove item from inventory after use
+            // ✅ Remove the healing item from inventory
             gameState.inventory = gameState.inventory.filter(i => i !== item);
 
-            // ✅ Update the player's HP HUD
-            if (typeof updatePlayerHP === "function") {
-                updatePlayerHP(gameState.player.hp);
-            }
-            if (typeof updateHUD === "function") {
-                updateHUD(); // ✅ Ensure HUD reflects the new health
-            } else {
-                console.warn("⚠️ updateHUD function is missing!");
-            }
+            // ✅ Update UI
+            updateHUD();
 
-            // Notify the player and proceed to enemy's turn
-            displayText(`You used ${item.name} and restored ${healedAmount} HP.`, enemyTurn);
+            displayText(`You used ${item.name} and restored ${healedAmount} HP.`, () => {
+                displayText(`Your health is now ${gameState.player.hp}/${gameState.player.maxHp}.`, enemyTurn);
+            });
         }
-    }));
-
-    // Show healing item choices
-    showOptions(healingOptions);
+    })));
 }
+
 
 // Enemy's turn
 function enemyTurn() {

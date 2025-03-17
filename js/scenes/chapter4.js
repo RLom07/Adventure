@@ -151,7 +151,6 @@ function goatRiderAmbush() {
 }
 
 function manjiAsks() {
-    changeSceneMusic("meetingMaji");
     displayText("Manji: These guys are after you?", () => {
         displayText("You: They took my family from me and left me alive to suffer only to finish me off later so it seems", () => {
             displayText("Manji: You knuckle head, the last thing you must do if two armed man run at you is stand frozen in fear.", () => {
@@ -182,14 +181,16 @@ function manjiAcceptsTraining() {
 function trainingStarts() {
     saveGame();
 
-    changeSceneMusic("trainingTheme");
+    changeSceneMusic("trainingStarts");
     clearGameText();
 
     displayText("The next morning, you arrive as early as you can at Manji’s house.", () => {
         displayText("Manji: You actually came. Good.", () => {
             displayText("Manji: By the way, you haven’t told me your name.", () => {
                 displayText(`You: It's ${gameState.player.name}.`, () => {
-                    displayText(`Manji: Alright, ${gameState.player.name}, your training starts now.`)
+                    displayText(`Manji: Alright, ${gameState.player.name}, your training starts now.`, () => {
+                        startChapter5()
+                    });
                 });
             });
         });

@@ -29,6 +29,7 @@ window.allItems = {
     wolfPelt: { name: "Wolf Pelt", type: "loot" },
 
     // Healing Items
+    bandage: { name: "Bandage", type: "healing", healAmount: 10 },
     smallHerb: { name: "Small Herb", type: "healing", healAmount: 5 },
     healingPotion: { name: "Healing Potion", type: "healing", healAmount: 15 },
     bigHealingPotion: { name: "Big Healing Potion", type: "healing", healAmount: 30 },
@@ -38,7 +39,6 @@ window.allItems = {
     divineBlessing: { name: "Divine Blessing", type: "healing", healAmount: 100 },
 
     // 🩸 Special Regeneration Items
-    bandage: { name: "Bandage", type: "healing", healAmount: 10 },
     herbalMix: { name: "Herbal Mix", type: "healing", healAmount: 20 }
 };
 
