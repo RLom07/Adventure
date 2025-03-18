@@ -24,7 +24,7 @@ function startIntroduction() {
     changeSceneMusic("prologueMusic");
 
     displayText("Prologue I: The Dream", () => {
-        displayText("You are floating in an endless void, weightless, drifting through an abyss untouched by time. There is no ground, no sky—only the vast nothingness stretching infinitely in every direction. You feel neither cold nor warmth, only the eerie sensation of being watched.", () => {
+        displayText("You are floating in an endless void, weightless, drifting through an abyss untouched by time. There is no ground, no sky only the vast nothingness stretching infinitely in every direction. You feel neither cold nor warmth, only the eerie sensation of being watched.", () => {
             displayText("Then, from the shadows, she appears.", () => {
                 displayText("Her presence is familiar yet unrecognizable, a paradox wrapped in sorrow. Her form flickers like a candle in the wind, barely holding on to existence. Her eyes meet yours.", () => {
                     displayText(`???: “Greetings, ${gameState.player.name}… if you are seeing this, then I am already dead.”`, () => {

@@ -74,6 +74,7 @@ function refusePirateDeal() {
 
 
 function boardShip() {
+
     displayText("You and Manji get onboard. A few days later, the ship finally leaves.", () => {
         displayText("As the ship sets sail, the salty wind whips through the air.", () => {
             displayText("The creaking of the wooden deck beneath your boots reminds you that you are now truly at sea.", () => {
@@ -96,7 +97,7 @@ function boardShip() {
                                                                         displayText("Sail on, sail on, to distant shores (yo-ho!)", () => {
                                                                             displayText("With swords in our hands and our hearts filled with fire", () => {
                                                                                 displayText("We're bound for glory, we'll never tire", () => {
-                                                                                    fadeOutMusic();
+                                                                                    changeSceneMusic("seaAtNight");
                                                                                     displayText("As the song ends, you look around and realize—you are about to enter the unknown...", () => {
                                                                                         nightOnShip()
                                                                                     });
@@ -124,7 +125,6 @@ function boardShip() {
 }
 
 function nightOnShip() {
-    changeSceneMusic("seaAtNight");
     clearGameText();
 
     displayText("At nightfall, you and Manji lean against the railing, staring at the moonlit waves.", () => {
@@ -419,17 +419,6 @@ function meetTheWoman() {
 function revealTerminus() {
     changeSceneMusic("terminusTheme"); 
 
-    gameState.player.maxHp = 100;
-    gameState.player.hp = gameState.player.maxHp; // ✅ Fully restore health
-
-    // ✅ Ensure the HUD updates properly
-    if (typeof updatePlayerHP === "function") {
-        updatePlayerHP(gameState.player.hp); // ✅ Pass updated HP value
-    }
-    if (typeof updateHUD === "function") {
-        updateHUD();
-    }
-
     displayText("Her words become twisted, her form distorting as the smile disappears.", () => {
         displayText("???: I can’t believe… you fell for that!", () => {
             displayText("Suddenly, the woman disappears into darkness, and from the shadows, a monstrous figure emerges.", () => {
@@ -603,7 +592,6 @@ function finalChoice() {
     });
 }
 
-// Case 1: The Player Finds Peace
 function findRest() {
     displayText("You: I want to find the rest I have been seeking for so long.", () => {
         displayText("Alysandra: So it will be.", () => {
@@ -618,7 +606,9 @@ function findRest() {
                                     displayText("You: Always.", () => {
                                         displayText("Together, you walk toward your family.", () => {
                                             displayText("You finally feel the peace you've longed for.", () => {
-                                                displayText("THE END.", () => {});
+                                                displayText("THE END.", () => {
+                                                    startCredits();
+                                                });
                                             });
                                         });
                                     });
@@ -632,7 +622,6 @@ function findRest() {
     });
 }
 
-// Case 2: The Player Stays in This World
 function stayAndChange() {
     displayText("You: I want to stay and make this world a better place.", () => {
         displayText("Alysandra: So it will be.", () => {
@@ -647,7 +636,9 @@ function stayAndChange() {
                                     displayText("Captain: Arrr, too bad! Well, no matter. Hop onboard, compadre!", () => {
                                         displayText("You step aboard, feeling ready for whatever comes next.", () => {
                                             displayText("A new adventure awaits.", () => {
-                                                displayText("THE END.", () => {});
+                                                displayText("THE END.", () => {
+                                                    startCredits();
+                                                });
                                             });
                                         });
                                     });

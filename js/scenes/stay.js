@@ -77,7 +77,6 @@ function startFadeOutEffect() {
         if (opacity <= 0) {
             clearInterval(fadeInterval);
             outputEl.innerHTML = ""; // Clear text after fade
-            startScene("credits"); // Transition to credits
         }
     }, fadeStep);
 }

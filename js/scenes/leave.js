@@ -21,7 +21,7 @@ function startLeaveScene() {
 
     clearGameText();
 
-    displayText("Something stirs deep inside you—a feeling long buried beneath grief and fear.", () => {
+    displayText("Something stirs deep inside you a feeling long buried beneath grief and fear.", () => {
         displayText("No more hiding. No more waiting for death to find you.", () => {
             displayText("You pack what little you have: a dagger, a waterskin, a single keepsake from your past and some food. Stepping outside, the morning sun greets you with its golden embrace.", () => {
                 displayText("You take a deep breath.", () => {

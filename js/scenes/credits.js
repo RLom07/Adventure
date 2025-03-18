@@ -106,7 +106,7 @@ function rollCredits(container) {
     setTimeout(() => {
         creditsText.remove(); // Remove credits
         showThankYouMessage();
-    }, 48000); 
+    }, 48000);
 }
 
 // ✅ Final Thank You Message
@@ -130,15 +130,15 @@ function showThankYouMessage() {
 
     // 🎇 After a few seconds, fade to black and return to main menu
     // Smooth fade in
-        setTimeout(() => {
-            thankYouMessage.style.transition = "opacity 3s";
-            thankYouMessage.style.opacity = "1";
-        }, 3000);
+    setTimeout(() => {
+        thankYouMessage.style.transition = "opacity 3s";
+        thankYouMessage.style.opacity = "1";
+    }, 3000);
 
-        // Smooth fade out after a few seconds
-        setTimeout(() => {
-            thankYouMessage.style.opacity = "0";
-        }, 6000);
+    // Smooth fade out after a few seconds
+    setTimeout(() => {
+        thankYouMessage.style.opacity = "0";
+    }, 6000);
 }
 
 // ✅ Return to Main Menu

@@ -21,7 +21,7 @@ function startChapter2() {
 
     displayText("Chapter 2: A Beginning", () => {
         displayText("As you walk through the forest, you realize how long it has been since you have seen its beauty.", () => {
-            displayText("The green trees, the animals—it is all so peaceful.", () => {
+            displayText("The green trees, the animals it is all so peaceful.", () => {
                 displayText("After hours of walking, you decide to set up camp and rest for the night.", () => {
                     displayText("You have some meat in your bag.", () => {
                         displayText("What’s for dinner?", () => {
