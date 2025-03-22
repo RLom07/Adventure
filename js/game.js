@@ -3,27 +3,14 @@
 // Game State - Everything stored here is automatically saved
 let gameState = {
     player: { name: "", hp: 30, maxHp: 30, attack: 5 },
-    inventory: [],
-    currentScene: "" // Tracks the current story scene
+    inventory: []
 };
-
 
 // The commented out code was used to handle scene data, but it's now unused. It didnt work so i discontinued it.
 /*
 gameState.sceneData = gameState.sceneData || {}; // Ensure it's initialized
 let sceneData = gameState.sceneData; // Use this globally
 */
-
-// Auto-save function
- function saveGame() {
-    const saveData = {
-        player: gameState.player,
-        inventory: gameState.inventory
-    };
-
-    localStorage.setItem("adventureGameSave", JSON.stringify(saveData));
-    console.log("✅ Game saved:", saveData);
-}
 
 /*
 function loadSceneFile(sceneName, callback) {
@@ -43,31 +30,7 @@ function loadSceneFile(sceneName, callback) {
 
     document.head.appendChild(script);
 }
-*/
 
-function startScene(sceneName) {
-    if (!window.sceneData || !sceneData[sceneName]) {
-        console.warn(`❌ Scene "${sceneName}" not found.`);
-        displayText(`Error: Scene "${sceneName}" does not exist.`);
-        return;
-    }
-
-    console.log(`🎭 Running scene function for: ${sceneName}`);
-
-    gameState.scene = sceneName; // Store the scene ID
-    saveGame();
-    updateHUD(); // ✅ Ensure HUD updates on scene change
-
-    if (typeof window[sceneName] === "function") {
-        clearGameText();
-        window[sceneName]();
-    } else {
-        console.error(`❌ Error: Scene function "${sceneName}" is not defined.`);
-        displayText(`Error: Scene "${sceneName}" is missing a function.`);
-    }
-}
-
-/*
 // Load function - Retrieves saved data if available
 function loadGame() {
     const savedData = localStorage.getItem("adventureGameSave");
@@ -119,7 +82,6 @@ function resetGame() {
 // Handles item collection
 function addItemToInventory(item) {
     gameState.inventory.push(item);
-    saveGame();
     displayText(`You have obtained: ${item.name}`);
 }
 
@@ -128,7 +90,6 @@ function removeItemFromInventory(itemName) {
     const itemIndex = gameState.inventory.findIndex(item => item.name === itemName);
     if (itemIndex !== -1) {
         gameState.inventory.splice(itemIndex, 1); // Remove item from array
-        saveGame();
         console.log(`🗑️ Removed ${itemName} from inventory.`);
         updateHUD(); // Ensure HUD updates correctly
     } else {
@@ -139,34 +100,14 @@ function removeItemFromInventory(itemName) {
 // Updates player health
 function updatePlayerHP(amount) {
     gameState.player.hp = Math.max(0, Math.min(gameState.player.maxHp, gameState.player.hp + amount));
-    saveGame();
     displayText(`Your health is now ${gameState.player.hp}/${gameState.player.maxHp}.`);
-}
-
-// Completes quests
-function completeQuest() {
-    gameState.questCompleted = true;
-    saveGame();
-    displayText("Congratulations! You have completed the quest.");
 }
 
 // Start combat
 function startCombat(enemy) {
     gameState.inCombat = true;
     gameState.currentEnemy = enemy;
-    saveGame();
     displayText(`A wild ${enemy.name} appears!`);
-}
-
-// Defeat an enemy
-function defeatEnemy() {
-    if (gameState.currentEnemy.drop) {
-        addItemToInventory(gameState.currentEnemy.drop);
-    }
-    gameState.inCombat = false;
-    gameState.currentEnemy = null;
-    saveGame();
-    displayText("You have defeated the enemy!");
 }
 
 let skipEnterMode = false; 
@@ -335,8 +276,7 @@ function openInventoryMenu() {
 // Function to close inventory and restore previous game text
 function closeInventory() {
     if (!inventoryOpen) return; // Only run if inventory is open
-
-    console.log("Closing inventory, restoring game text..."); // Debugging
+    
     inventoryOpen = false; // Mark inventory as closed
     document.getElementById("output").innerHTML = previousGameText; // Restore previous text
 }
@@ -359,46 +299,11 @@ document.addEventListener("keydown", (event) => {
 // Equips the selected weapon
 function equipWeapon(weapon) {
     gameState.player.equippedWeapon = weapon;
-    saveGame(); 
     displayText(`${weapon.name} is now equipped.`);
 }
 
-// This tool is used for developers to skip specific scenes during development, if you want to play the game like its suposed to i suggest you leave this function alone.
-function devSkipScene() {
-    if (!window.sceneData || Object.keys(sceneData).length === 0) {
-        console.warn("❌ No scenes are registered yet.");
-        displayText("Error: No scenes are available.");
-        return;
-    }
+// This tool is used for developers to add specific items during development, if you want to play the game like its suposed to i suggest you leave this function alone.
 
-    console.log("🗺️ Available scenes:", Object.keys(sceneData));
-  
-    const sceneName = prompt("Enter scene ID to jump to:\n" + Object.keys(sceneData).join(", "));
-
-    if (sceneName && sceneData[sceneName]) {
-        console.log(`🔄 Jumping to scene: ${sceneName}`);
-        
-        // Instead of displaying text, directly run the scene's function
-        if (typeof window[sceneName] === "function") {
-            clearGameText();
-            window[sceneName](); // Runs the scene's function
-        } else {
-            console.warn(`❌ No function found for scene "${sceneName}".`);
-            displayText(`Error: Scene "${sceneName}" is missing a function.`);
-        }
-    } else {
-        console.warn(`❌ Scene "${sceneName}" not found.`);
-        displayText(`Error: Scene "${sceneName}" does not exist.`);
-    }
-}
-
-// Bind `CTRL + S` to `devSkipScene()`
-document.addEventListener("keydown", (event) => {
-    if (event.ctrlKey && event.key.toLowerCase() === "s") {
-        event.preventDefault(); // Prevent browser save popup
-        devSkipScene();
-    }
-});
 
 // Developer Tool: Add any item to inventory with CTRL + D
 function devAddItem() {

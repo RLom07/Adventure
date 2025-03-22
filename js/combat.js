@@ -93,7 +93,7 @@ function changeWeapon() {
 }
 
 function useHealingItem() {
-    // ✅ Get all healing items from inventory
+    // Get all healing items from inventory
     let healingItems = gameState.inventory.filter(item => item.type === "healing");
 
     if (healingItems.length === 0) {
@@ -101,7 +101,7 @@ function useHealingItem() {
         return;
     }
 
-    // ✅ Show options for available healing items
+    // Show options for available healing items
     showOptions(healingItems.map(item => ({
         text: `${item.name} (${item.healAmount} HP)`,
         action: () => {
@@ -109,13 +109,13 @@ function useHealingItem() {
             let healedAmount = item.healAmount;
             let newHP = Math.min(previousHP + healedAmount, gameState.player.maxHp);
 
-            // ✅ Update player HP
+            // Update player HP
             gameState.player.hp = newHP;
 
-            // ✅ Remove the healing item from inventory
+            // Remove the healing item from inventory
             gameState.inventory = gameState.inventory.filter(i => i !== item);
 
-            // ✅ Update UI
+            // Update UI
             updateHUD();
 
             displayText(`You used ${item.name} and restored ${healedAmount} HP.`, () => {
@@ -148,11 +148,6 @@ function enemyTurn() {
 
 // Check if player is dead
 function checkCombatEnd() {
-    
-    if (gameState.player.hp <= 0) {
-        handleGameOver();
-        return;
-    }
 
     if (combatState.enemyHP <= 0) {
         endCombat();
@@ -165,19 +160,15 @@ function checkCombatEnd() {
 // Ends the combat when enemy is defeated
 function endCombat() {
     displayText(`You defeated ${combatState.enemy.name}!`, () => {
-        if (combatState.enemy.drop) {
-            addItemToInventory(combatState.enemy.drop);
-        }
-        gameState.inCombat = false;
         stopMusic();
 
         displayText("You take a deep breath, the battle is over.", () => {
-            continueAfterBattle(); // ✅ Calls the correct post-battle function
+            continueAfterBattle(); // Calls the correct post-battle function
         });
     });
 }
 
-// ✅ Dynamically calls the correct story function after battle
+// Dynamically calls the correct story function after battle
 function continueAfterBattle() {
     if (combatState.enemy && combatState.enemy.afterDefeat) {
         combatState.enemy.afterDefeat(); // Call the function dynamically

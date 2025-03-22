@@ -4,27 +4,27 @@ function startChapter6() {
 
     displayText("Chapter 6: A Awakening", () => {
         displayText("After a few days of walking, you and Manji arrive at a harbor.", () => {
-            displayText("You see multiple ships and different people, but as you get closer, you immediately notice—", () => {
+            displayText("You see multiple ships and different people, but as you get closer, you immediately notice", () => {
                 displayText("These aren’t ordinary sailors. They are pirates.", () => {
                     displayText("You approach one of them.", () => {
                         displayText("You: Who’s your captain?", () => {
-                            displayText("Pirate: Argh, who's asking?", () => {
+                            displayText("Pirate: Arrr, who's asking?", () => {
                                 displayText("You: I am.", () => {
                                     displayText("Pirate: Thinking you’re funny, are we?", () => {
                                         displayText("Manji: Something the matter?", () => {
                                             displayText("The pirate immediately seems very intimidated by Manji.", () => {
-                                                displayText("Pirate: Uhhh... Argh, not at all, compadre. The captain is right over there.", () => {
+                                                displayText("Pirate: Uhhh... Arrr, not at all, compadre. The captain is right over there.", () => {
                                                     displayText("Manji: Wasn’t so hard now, was it?", () => {
                                                         displayText("You and Manji walk towards the captain.", () => {
                                                             displayText("Manji: Ahoi, Captain! Where is the journey going?", () => {
-                                                                displayText("Captain: Argh... To the land of Solitude past the Abyssal Isle.", () => {
+                                                                displayText("Captain: Arrr... To the land of Solitude past the Abyssal Isle.", () => {
                                                                     displayText("You: That’s it! That is where we need to go!", () => {
                                                                         displayText("Manji: For how much will you take us with you?", () => {
-                                                                            displayText("Captain: Argh, now now, new friends. Since we are already going there, you can come with us for free, argh.", () => {
+                                                                            displayText("Captain: Arrr, now now, new friends. Since we are already going there, you can come with us for free, arrr.", () => {
                                                                                 displayText("Manji: And the catch is???", () => {
-                                                                                    displayText("Captain: Argh... that you protect us during our journey until we arrive at Abyssal Isle. You both seem like good swordsmen.", () => {
+                                                                                    displayText("Captain: Arrr... that you protect us during our journey until we arrive at Abyssal Isle. You both seem like good swordsmen.", () => {
                                                                                         displayText("Manji: That’s it?", () => {
-                                                                                            displayText("Captain: Argh... no no, new friends. One more thing. When you find treasure on the island, you give it to us, argh.", () => {
+                                                                                            displayText("Captain: Arrr no no, new friends. One more thing. When you find treasure on the island, you give it to us, argh.", () => {
                                                                                                 displayText("Manji: That okay with you, kid?", () => {
                                                                                                     showOptions([
                                                                                                         { text: "Fine by me", action: acceptPirateDeal },
@@ -58,14 +58,14 @@ function startChapter6() {
 
 
 function acceptPirateDeal() {
-    displayText("Captain: Argh, welcome onboard, compadres! Argh!", () => {
+    displayText("Captain: Arrr, welcome onboard, compadres! Arrr!", () => {
         boardShip();
     });
 }
 
 
 function refusePirateDeal() {
-    displayText("Captain: Argh, that is too bad, compadre. Then you have to swim to the island yourself, argh.", () => {
+    displayText("Captain: Arrr, that is too bad, compadre. Then you have to swim to the island yourself, arrr.", () => {
         showOptions([
             { text: "Ugh, alright then, you can have the treasures if we find any.", action: acceptPirateDeal }
         ]);
@@ -98,10 +98,10 @@ function boardShip() {
                                                                             displayText("With swords in our hands and our hearts filled with fire", () => {
                                                                                 displayText("We're bound for glory, we'll never tire", () => {
                                                                                     changeSceneMusic("seaAtNight");
-                                                                                    displayText("As the song ends, you look around and realize—you are about to enter the unknown...", () => {
+                                                                                    displayText("As the song ends, you look around and realize you are about to enter the unknown...", () => {
                                                                                         nightOnShip()
                                                                                     });
-                                                                                }, true);
+                                                                                });
                                                                             }, true);
                                                                         }, true);
                                                                     }, true);
@@ -152,6 +152,7 @@ function nightOnShip() {
 
 function arriveAtAbyssalIsle() {
     changeSceneMusic("island"); 
+    gameState.player.hp = gameState.player.maxHp;
     clearGameText();
 
     displayText("A few weeks later, you and Manji finally arrive at Abyssal Isle.", () => {
@@ -207,7 +208,8 @@ function triggerAmbush() {
                 displayText("You draw your weapon, ready to fight.", () => {
                     displayText("You and Manji stand back to back.", () => {
                         displayText("Manji: Show me what you learned, kid! We got this!", () => {
-                            startTerminusMinionBattle()
+                            clearGameText();
+                            startCombat(terminusMinion);
                         });
                     });
                 });
@@ -216,20 +218,16 @@ function triggerAmbush() {
     });
 }
 
-function startTerminusMinionBattle() {
-    let terminusMinion = {
-        name: "Terminus Minion",
-        hp: 200,
-        attackOptions: [
-            { name: "Shadow Slash", damage: 10, accuracy: 70 },
-            { name: "Dark Stab", damage: 15, accuracy: 50 }
-        ],
-        music: "terminusMinion",
-        afterDefeat: afterMinionBattle
-    };
-
-    startCombat(terminusMinion);
-}
+const terminusMinion = {
+    name: "Terminus Minion",
+    hp: 200,
+    attackOptions: [
+        { name: "Shadow Slash", damage: 10, accuracy: 70 },
+        { name: "Dark Stab", damage: 15, accuracy: 50 }
+    ],
+    music: "terminusMinion",
+    afterDefeat: afterMinionBattle
+};
 
 function afterMinionBattle() {
     changeSceneMusic("ambush")
@@ -300,6 +298,7 @@ function firstCaveSplit() {
 }
 
 function secondCaveSplit() {
+    clearGameText();
     displayText("Another parting, quickly where do you go!", () => {
         timedChoice(
             [
@@ -311,6 +310,7 @@ function secondCaveSplit() {
 }
 
 function thirdCaveSplit() {
+    clearGameText();
     displayText("Another parting, quickly where do you go!", () => {
         timedChoice(
             [
@@ -330,10 +330,10 @@ function reachSafeRoom() {
     });
 }
 
-/** 
- * Handles choices with a 3-second timer.
- * If no choice is made, the player takes 2 damage.
- */
+ 
+ // Handles choices with a 3-second timer.
+ // If no choice is made, the player takes 2 damage.
+
 function timedChoice(options) {
     let countdown = 3;
     let countdownEl = document.createElement("div");
@@ -375,7 +375,7 @@ function takeDamageAndContinue(damage, message) {
         if (gameState.player.hp <= 0) {
             handleGameOver();
         } else {
-            secondCaveSplit();
+            thirdCaveSplit();
         }
     }, true);
 }
@@ -452,6 +452,7 @@ function confrontationWithTerminus() {
                     displayText("You: I’LL KILL YOU!", () => {
                         displayText("Terminus: You can’t kill something that is already dead.", () => {
                             displayText("Terminus: But I’ll be happy to see you try. Hahaha!", () => {
+                                clearGameText();
                                 startCombat(terminus);
                             });
                         });
@@ -514,7 +515,7 @@ function revealAlysandra() {
     });
 }
 
-// ✅ Tracks remaining questions
+// Tracks remaining questions
 let remainingQuestions = [
     { text: "Why did you choose me?", action: whyMe },
     { text: "What had my family to do with this?", action: familyTruth },
@@ -522,18 +523,18 @@ let remainingQuestions = [
     { text: "Why did you need me?", action: whyNeeded }
 ];
 
-// ✅ Function to update the choices dynamically
+// Function to update the choices dynamically
 function showAlysandraOptions() {
     if (remainingQuestions.length === 0) {
-        proceedAfterQuestions(); // ✅ Continue story if all questions are asked
+        proceedAfterQuestions(); // Continue story if all questions are asked
         return;
     }
 
     showOptions(remainingQuestions.map((q, index) => ({
         text: q.text,
         action: () => {
-            remainingQuestions.splice(index, 1); // ✅ Remove chosen question
-            q.action(); // ✅ Call the selected function
+            remainingQuestions.splice(index, 1); // Remove chosen question
+            q.action(); // Call the selected function
         }
     })));
 }
@@ -566,7 +567,7 @@ function whyNeeded() {
     });
 }
 
-// ✅ When all questions have been asked, proceed with the story
+// When all questions have been asked, proceed with the story
 function proceedAfterQuestions() {
     displayText("Alysandra smiles warmly as she looks at you.", () => {
         displayText("Alysandra: Now that you understand everything, there is one last thing I must offer you.", () => {
@@ -598,7 +599,7 @@ function findRest() {
             displayText("She snaps her fingers, and a bright light engulfs you.", () => {
                 changeSceneMusic("peacefullEnding");
                 clearGameText();
-                displayText("When you open your eyes, you see a beautiful land—mountains, waterfalls, peaceful villages.", () => {
+                displayText("When you open your eyes, you see a beautiful land, mountains, waterfalls, peaceful villages.", () => {
                     displayText("In the distance, you see your family waving at you, beckoning you to come.", () => {
                         displayText("As you step forward, a hand rests on your shoulder.", () => {
                             displayText("You turn to see Manji, smiling at you.", () => {
@@ -629,7 +630,7 @@ function stayAndChange() {
                 changeSceneMusic("stayAndChange");
                 clearGameText();
                 displayText("When you open your eyes, you're standing on top of the island.", () => {
-                    displayText("You feel different—stronger, unstoppable.", () => {
+                    displayText("You feel different stronger, unstoppable.", () => {
                         displayText("A ship appears in the distance, the pirates returning.", () => {
                             displayText("Captain: Ahoy, buddy! Did you find any treasure?", () => {
                                 displayText("You: Sorry Captain, nothing you can use.", () => {

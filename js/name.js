@@ -1,3 +1,4 @@
+// This commended out code was for a save file system, which was discontinued
 /*
 document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("adventureGameSave")) {
@@ -17,8 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 */
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 Starting new game by asking for player name...");
-    askPlayerName(); // Start name entry immediately
+    askPlayerName();
 });
 
 
@@ -26,8 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function askPlayerName() {
     const outputEl = document.getElementById("output");
     outputEl.innerHTML = ""; // Clear previous content
-
-    console.log("Displaying name input field immediately...");
 
     // Display text but SKIP the Enter requirement
     displayText("Before your journey begins, tell us your name...\n", () => {
@@ -59,7 +57,6 @@ function askPlayerName() {
 // Confirms and saves the name automatically
 function confirmName(name) {
     gameState.player.name = name.trim();
-    saveGame();
     updateHUD(); // Update HUD after name is confirmed
     document.getElementById("output").innerHTML = "";
     startIntroduction();  

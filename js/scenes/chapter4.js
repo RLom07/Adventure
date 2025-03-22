@@ -1,6 +1,4 @@
 function startChapter4() {
-    saveGame();
-    console.log("🎬 Running Chapter 4: The Mentor");
 
     changeSceneMusic("innMusic2");
     clearGameText();
@@ -83,7 +81,7 @@ function goToManji() {
 
 function lookAroundTown() {
     displayText("You decide not to take the risk. After all, if what the innkeeper said is true, you may very well be his next meal.", () => {
-        displayText("This town is huge—there must be an alternative somewhere.", () => {
+        displayText("This town is huge there must be an alternative somewhere.", () => {
             displayText("3 hours later...", () => {
                 displayText("You walked through the entire town multiple times and asked multiple people. They all told you the same thing: the godforsaken Imperial Academy is the only way, and they don’t accept outsiders.", () => {
                     displayText("With no better plan, you decide to try to find that Manji guy anyway. It’s better than going off with no plan because that will certainly get you killed.", arriveAtManji);
@@ -139,11 +137,11 @@ function requestManjiHelp() {
 
 function goatRiderAmbush() {
     changeSceneMusic("twoGoatRiders");
-    displayText("As you near the village, two men jump out of the bushes. You immediately recognize the symbol on their uniform—they are Goat Riders.", () => {
+    displayText("As you near the village, two men jump out of the bushes. You immediately recognize the symbol on their uniform they are Goat Riders.", () => {
         displayText("Goat Rider 1: So this is where the remaining one has been hiding.", () => {
             displayText("Goat Rider 2: You missed the fireworks at your home, fool. Now prepare to die!", () => {
                 displayText("They charge at you with knives drawn. You freeze in fear, unable to move.", () => {
-                    displayText("Just before they can touch you, Manji draws his sword. With one swift motion, both men fall to the ground—dead.", manjiAsks);
+                    displayText("Just before they can touch you, Manji draws his sword. With one swift motion, both men fall to the ground dead.", manjiAsks);
                 });
             });
         });
@@ -179,7 +177,6 @@ function manjiAcceptsTraining() {
 }
 
 function trainingStarts() {
-    saveGame();
 
     changeSceneMusic("trainingStarts");
     clearGameText();

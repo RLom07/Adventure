@@ -1,19 +1,4 @@
-(() => {
-    if (!window.sceneData) {
-        window.sceneData = {};
-    }
-
-    const sceneID = "chapter3";
-    sceneData[sceneID] = { id: sceneID };
-
-    console.log(`✅ Scene "${sceneID}" registered with ID: ${sceneData[sceneID].id}`);
-
-    window[sceneID] = startChapter3;
-})();
-
 function startChapter3() {
-    saveGame();
-    console.log("🎬 Running Chapter 3: A Way");
 
     changeSceneMusic("travel");
     clearGameText();
@@ -32,7 +17,7 @@ function startChapter3() {
     });
 }
 
-// ✅ Traveler Interaction
+// Traveler Interaction
 function talkToTraveler() {
     displayText("Traveler: Hello, is there something I can do for you?", () => {
         displayText("You: Do you know where the nearest town is?", () => {
@@ -122,7 +107,7 @@ function beRude() {
     displayText("The woman backs off in fear, then grabs her child and runs away.", proceedToAshen);
 }
 
-// ✅ Arrival at Ashen
+// Arrival at Ashen
 function proceedToAshen() {
     displayText("You continue walking towards the village.", () => {
         displayText("When you finally arrive, it is already nighttime.", () => {
@@ -131,7 +116,7 @@ function proceedToAshen() {
     });
 }
 
-// ✅ Inside the Inn
+// Inside the Inn
 function enterInn() {
     changeSceneMusic("innMusic1");
 
@@ -237,7 +222,7 @@ function askEmbermarks() {
         displayText("Man: Yeah, Embermarks. What’s the problem?", () => {
             displayText("You: What are Embermarks?", () => {
                 displayText("Man: You don’t know?", () => {
-                    displayText("Man: It’s our currency. The way we pay for things—food, drinks, a bed for the night.", () => {
+                    displayText("Man: It’s our currency. The way we pay for things: food, drinks, a bed for the night.", () => {
                         displayText("You: You don’t trade with animals or materials?", () => {
                             displayText("Man: (chuckles) I don’t know what time you think we live in, but this is how it’s been since the Empire took over these lands almost a thousand years ago.", () => {
                                 displayText("You: Empire?", () => {
@@ -257,7 +242,7 @@ function askEmbermarks() {
 }
 
 function tryToTrade() {
-    displayText("Man: Please, i really need a room for tonight. There must be something i can give you to trade.", () => {
+    displayText("You: Please, i really need a room for tonight. There must be something i can give you to trade.", () => {
         showOptions([
             { text: "[Offer your Dagger]", action: offerDagger },
             { text: "[Offer Wolf Pelt (if available)]", action: offerPelt },

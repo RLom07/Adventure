@@ -109,7 +109,7 @@ function fadeOutMusic(audioElement, callback) {
             audioElement.pause();
             audioElement.volume = 1.0; // Reset for next use
 
-            // ✅ Check if callback exists and is a function before calling it
+            // Check if callback exists and is a function before calling it
             if (typeof callback === "function") {
                 callback();
             } else {

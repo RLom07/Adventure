@@ -1,20 +1,4 @@
-(() => {
-    if (!window.sceneData) {
-        window.sceneData = {}; 
-    }
-
-    const sceneID = "leave"; 
-
-    sceneData[sceneID] = { id: sceneID };
-
-    console.log(`✅ Scene "${sceneID}" registered with ID: ${sceneData[sceneID].id}`);
-
-    window[sceneID] = startLeaveScene;
-})();
-
 function startLeaveScene() {
-    saveGame();
-    console.log("🎬 Running Leave Scene");
 
     // Change to the appropriate background music
     changeSceneMusic("adventureBegins");
@@ -59,6 +43,6 @@ function obtainStartingItems() {
 
     // After displaying item messages, move to the next scene
     setTimeout(() => {
-        startScene("chapter2");
+        startChapter2();
     }, 2000); // Delay so the player sees obtained items
 }

@@ -1,17 +1,15 @@
 function startChapter5() {
-    saveGame();
-    console.log("🎬 Starting Chapter 5: The Market & The Attack...");
 
     changeSceneMusic("morningTheme"); // Use a calm market theme
     clearGameText();
 
-    // ✅ Increase Player's Max HP & Fully Heal Them
+    // Increase Player's Max HP & Fully Heal Them
     gameState.player.maxHp = 100;
-    gameState.player.hp = gameState.player.maxHp; // ✅ Fully restore health
+    gameState.player.hp = gameState.player.maxHp; // Fully restore health
 
-    // ✅ Ensure the HUD updates properly
+    // Ensure the HUD updates properly
     if (typeof updatePlayerHP === "function") {
-        updatePlayerHP(gameState.player.hp); // ✅ Pass updated HP value
+        updatePlayerHP(gameState.player.hp); // Pass updated HP value
     }
     if (typeof updateHUD === "function") {
         updateHUD();
@@ -62,6 +60,7 @@ function refuseKatana() {
 
 function afterReceivingKatana() {
     addItemToInventory(allItems.katana); 
+    equipWeapon(allItems.katana);
 
     displayText("You: I don’t know what to say.", () => {
         displayText("Manji: Then say nothing for once in your life.", () => {
@@ -341,7 +340,6 @@ function checkCipherAnswer(input) {
 }
 
 // **Hint functionality**
-let hintStep = 0;
 function giveHint() {
     displayText("E -> A     X -> T");
 }
@@ -356,7 +354,7 @@ function continueScene() {
             displayText("You: Dead sure.", () => {
                 displayText("Manji: No way, that explains everything.", () => {
                     displayText("You: What do you mean?", () => {
-                        displayText("Manji: Mari was doing research on Terminus, the brother of Emperor Pyrethorn.", () => {
+                        displayText("Manji: My sister was doing research on Terminus, the brother of Emperor Pyrethorn.", () => {
                             displayText("Manji: She never told me anything, saying it was too dangerous. I never understood why, but now it makes sense.", () => {
                                 displayText("Manji: The Goat Riders... they are still animals, but they kill for a reason.", () => {
                                     displayText("Manji: Everyone who gets too close to the identity of their lord gets killed by them...", () => {
@@ -384,7 +382,7 @@ function visionAndDeparture() {
         displayText("Manji: KID! You alright?", () => {
             displayText("Your head starts to hurt more and more until you suddenly hear the voice of that woman from your dreams.", () => {
                 displayText("???: You figured it out, good. You are ready to find me, you know where to go. Hurry, you are my only hope.", () => {
-                    displayText("Suddenly the pain starts to fade, but something remains—you know where you need to go.", () => {
+                    displayText("Suddenly the pain starts to fade, but something remains you know where you need to go.", () => {
                         displayText("You: I know where I need to go. I’m sorry Manji, but I have to leave.", () => {
                             displayText("Manji: Don’t be foolish, kid. I’m coming with you.", () => {
                                 displayText("You: Manji, no! I can’t bring you into any more danger.", () => {

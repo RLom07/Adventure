@@ -1,23 +1,5 @@
-(() => {
-    if (!window.sceneData) {
-        window.sceneData = {}; 
-    }
-
-    const sceneID = "stay"; 
-
-    sceneData[sceneID] = { id: sceneID };
-
-    console.log(`✅ Scene "${sceneID}" registered with ID: ${sceneData[sceneID].id}`);
-
-    window[sceneID] = startStayScene;
-})();
-
-
 function startStayScene() {
-    saveGame();
-    console.log("🎬 Running Stay Scene (Game Over)");
 
-    // Change music to Stay Scene's theme
     changeSceneMusic("badEndingMusic");
 
     clearGameText();
@@ -51,7 +33,7 @@ function displayTextQueue(lines, callback) {
                 setTimeout(() => { // Auto-advance after each line
                     index++;
                     nextLine();
-                }, 500); // 1-second delay before the next line starts
+                }, 500); // 0.5-second delay before the next line starts
             }, true); // Skip Enter
         } else if (callback) {
             callback(); // Run the callback after all lines are done
@@ -66,9 +48,9 @@ function startFadeOutEffect() {
     const outputEl = document.getElementById("output");
 
     let opacity = 1; // Start fully visible
-    const fadeDuration = 10000; // 5 seconds fade-out
+    const fadeDuration = 10000; // 10 seconds fade-out
     const fadeStep = 50; // Speed of fading
-    const fadeAmount = fadeStep / fadeDuration; // How much to decrease each step
+    const fadeAmount = fadeStep / fadeDuration; 
 
     const fadeInterval = setInterval(() => {
         opacity -= fadeAmount;
